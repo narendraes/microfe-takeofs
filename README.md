@@ -113,9 +113,9 @@ The application includes markdown-based content pages for documentation and guid
    ```
 3. Start the development server:
    ```bash
-   npm run dev
+   npm run dev -- -p 7788
    ```
-4. Visit http://localhost:3000 in your browser
+4. Visit http://localhost:7788 in your browser
 
 ## Building for Production
 
@@ -131,7 +131,7 @@ The application includes markdown-based content pages for documentation and guid
 
 3. Test the production build locally:
    ```bash
-   npm run start
+   npm run start -- -p 7788
    ```
 
 ## Deploying to Production
@@ -161,14 +161,15 @@ For manual deployment to your own server:
 2. Set up environment variables:
    - Create a `.env.production` file
    - Add necessary environment variables
+   - Set PORT=7788 in your environment variables
 
 3. Start the production server:
    ```bash
    # Start with PM2 (recommended)
-   pm2 start npm --name "corporate-portal" -- start
+   pm2 start npm --name "corporate-portal" -- start -- -p 7788
 
    # Or start directly
-   npm start
+   npm start -- -p 7788
    ```
 
 4. Configure your web server (Nginx example):
@@ -178,7 +179,7 @@ For manual deployment to your own server:
      server_name your-domain.com;
 
      location / {
-       proxy_pass http://localhost:3000;
+       proxy_pass http://localhost:7788;
        proxy_http_version 1.1;
        proxy_set_header Upgrade $http_upgrade;
        proxy_set_header Connection 'upgrade';
