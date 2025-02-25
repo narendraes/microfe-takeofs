@@ -244,3 +244,79 @@ To configure API tokens, follow these steps:
 1. Create a new file in the `config` folder named `apiTokens.js`
 2. Add your API tokens to the file
 
+# Product Platform Intake Portal
+
+## Jira Issue Collector Integration
+
+This application includes a Jira Issue Collector for feedback collection. The collector appears as a "Support" button in the bottom-right corner of the page.
+
+### Requirements
+
+- jQuery 3.7.1 or later
+- Next.js 14.x
+- Content Security Policy (CSP) configured to allow:
+  - Scripts from `*.atlassian.net`
+  - Scripts from `ajax.googleapis.com`
+
+### Configuration
+
+The Jira Issue Collector is configured in `app/page.tsx` with the following settings:
+
+```typescript
+window.ATL_JQ_PAGE_PROPS = {
+  triggerPosition: "bottom-right",
+  triggerText: "Support",
+  collectFeedback: true,
+  fieldValues: {
+    summary: "Feedback from Product Platform Intake Portal",
+  }
+};
+```
+
+### Debugging
+
+If the Support button is not appearing, check the browser console for the following messages:
+
+1. "jQuery loaded successfully" - Confirms jQuery script loaded
+2. "Jira collector script loaded successfully" - Confirms Jira collector script loaded
+3. "Jira collector initialized with config: {...}" - Confirms collector was configured
+4. "jQuery detected, version: X.X.X" - Shows detected jQuery version
+
+Error messages to watch for:
+- "Failed to load jQuery: ..."
+- "Failed to load Jira collector script: ..."
+- "Failed to initialize Jira collector: ..."
+- "jQuery not found, retrying (X/3)..."
+- "jQuery not loaded after maximum retries"
+
+### Troubleshooting
+
+1. **Support button not appearing:**
+   - Check browser console for error messages
+   - Verify CSP settings in `next.config.js`
+   - Ensure jQuery is loading before the Jira collector script
+
+2. **CSP Issues:**
+   - Verify the Content Security Policy in `next.config.js` includes:
+     ```javascript
+     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.googleapis.com https://*.atlassian.net
+     ```
+
+3. **Script Loading Issues:**
+   - The application uses Next.js Script component with:
+     - jQuery: `strategy="beforeInteractive"`
+     - Jira Collector: `strategy="afterInteractive"`
+   - This ensures correct loading order
+
+4. **Network Issues:**
+   - Check browser Network tab for script loading failures
+   - Verify Jira collector URL is accessible
+   - Confirm jQuery CDN is accessible
+
+### Support
+
+For additional support or issues:
+- Check the browser console for error messages
+- Review the CSP configuration
+- Verify Jira collector configuration in Jira admin panel
+
