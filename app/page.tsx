@@ -1,7 +1,6 @@
 import { TileGrid } from "@/components/tile-grid"
 import Link from "next/link"
 
-
 export default function Home() {
   return (
     <main className="container mx-auto px-4">
