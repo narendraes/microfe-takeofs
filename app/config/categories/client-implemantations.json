@@ -1,0 +1,38 @@
+{
+  "title": "Client Implemantations",
+  "description": "1\n2\n2\n3",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "Describe what this category/team does.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Area 1",
+            "Area 2",
+            "Area 3"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "Describe current priorities for this category/team.",
+      "subsections": []
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Guideline 1",
+      "Guideline 2",
+      "Guideline 3"
+    ]
+  },
+  "contactInfo": {
+    "name": "person",
+    "role": "someone",
+    "email": "someone@something.com"
+  }
+}

@@ -121,4 +121,38 @@ export class CategoryManager {
   public getCategoryBySlug(slug: string): ProductContent | null {
     return this.getCategoryContent(slug);
   }
+
+  /**
+   * Gets categories that should be displayed on the home page
+   * sorted by their display order
+   */
+  public getHomePageCategories(): Array<{ id: string; content: ProductContent }> {
+    const allCategories = this.getAllCategories();
+    const homePageCategories = Object.entries(allCategories)
+      .filter(([_, content]) => content.displaySettings?.showOnHomePage)
+      .map(([id, content]) => ({ id, content }))
+      .sort((a, b) => {
+        const orderA = a.content.displaySettings?.displayOrder || 999;
+        const orderB = b.content.displaySettings?.displayOrder || 999;
+        return orderA - orderB;
+      });
+    
+    return homePageCategories;
+  }
+
+  /**
+   * Updates the display settings for a category
+   */
+  public updateDisplaySettings(
+    categoryId: string, 
+    settings: { showOnHomePage: boolean; displayOrder: number; tileColor?: string }
+  ): boolean {
+    const category = this.getCategoryContent(categoryId);
+    if (!category) {
+      return false;
+    }
+
+    category.displaySettings = settings;
+    return this.saveCategoryContent(categoryId, category);
+  }
 } 

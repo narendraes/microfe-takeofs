@@ -6,84 +6,288 @@ import { ProductContent } from '@/app/config/product-content-types'
 
 export default function CategoryAdminPage() {
   const [categories, setCategories] = useState<string[]>([])
+  const [categoryDetails, setCategoryDetails] = useState<Record<string, ProductContent>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [homePageOrder, setHomePageOrder] = useState<Record<string, number>>({})
+  const [savingSettings, setSavingSettings] = useState<Record<string, boolean>>({})
+  const [saveErrors, setSaveErrors] = useState<Record<string, string>>({})
+  const [saveSuccess, setSaveSuccess] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     // Fetch categories from the API
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories');
+        setLoading(true)
+        const response = await fetch('/api/categories')
         
         if (!response.ok) {
-          throw new Error(`Failed to fetch categories: ${response.statusText}`);
+          throw new Error(`Failed to fetch categories: ${response.statusText}`)
         }
         
-        const data = await response.json();
-        setCategories(data);
+        const data = await response.json()
+        setCategories(data)
+        
+        // Fetch details for each category
+        const details: Record<string, ProductContent> = {}
+        for (const category of data) {
+          const detailResponse = await fetch(`/api/categories/${category}`)
+          if (detailResponse.ok) {
+            const detailData = await detailResponse.json()
+            details[category] = detailData
+          }
+        }
+        
+        setCategoryDetails(details)
+        
+        // Initialize home page order
+        const orderMap: Record<string, number> = {}
+        Object.entries(details).forEach(([id, content]) => {
+          orderMap[id] = content.displaySettings?.displayOrder || 999
+        })
+        setHomePageOrder(orderMap)
       } catch (err) {
-        console.error('Error loading categories:', err);
-        setError('Failed to load categories. Check the console for details.');
+        console.error('Error loading categories:', err)
+        setError('Failed to load categories. Please try again.')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchCategories();
+    fetchCategories()
   }, [])
+
+  // Handle toggling display on home page
+  const handleToggleHomePageDisplay = async (categoryId: string) => {
+    const category = categoryDetails[categoryId]
+    if (!category) return
+    
+    const currentSettings = category.displaySettings || { showOnHomePage: false, displayOrder: 999 }
+    const newSettings = {
+      ...currentSettings,
+      showOnHomePage: !currentSettings.showOnHomePage
+    }
+    
+    await updateDisplaySettings(categoryId, newSettings)
+  }
+
+  // Handle changing display order
+  const handleOrderChange = (categoryId: string, order: number) => {
+    setHomePageOrder({
+      ...homePageOrder,
+      [categoryId]: order
+    })
+  }
+
+  // Handle saving display order
+  const handleSaveOrder = async (categoryId: string) => {
+    const category = categoryDetails[categoryId]
+    if (!category) return
+    
+    const currentSettings = category.displaySettings || { showOnHomePage: false, displayOrder: 999 }
+    const newSettings = {
+      ...currentSettings,
+      displayOrder: homePageOrder[categoryId] || 999
+    }
+    
+    await updateDisplaySettings(categoryId, newSettings)
+  }
+
+  // Handle changing tile color
+  const handleColorChange = async (categoryId: string, color: string) => {
+    const category = categoryDetails[categoryId]
+    if (!category) return
+    
+    const currentSettings = category.displaySettings || { showOnHomePage: false, displayOrder: 999 }
+    const newSettings = {
+      ...currentSettings,
+      tileColor: color
+    }
+    
+    await updateDisplaySettings(categoryId, newSettings)
+  }
+
+  // Update display settings via API
+  const updateDisplaySettings = async (categoryId: string, settings: any) => {
+    setSavingSettings({ ...savingSettings, [categoryId]: true })
+    setSaveErrors({ ...saveErrors, [categoryId]: '' })
+    setSaveSuccess({ ...saveSuccess, [categoryId]: false })
+    
+    try {
+      const response = await fetch(`/api/categories/${categoryId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ displaySettings: settings }),
+      })
+      
+      if (!response.ok) {
+        throw new Error(`Failed to update settings: ${response.statusText}`)
+      }
+      
+      // Update local state
+      setCategoryDetails({
+        ...categoryDetails,
+        [categoryId]: {
+          ...categoryDetails[categoryId],
+          displaySettings: settings
+        }
+      })
+      
+      setSaveSuccess({ ...saveSuccess, [categoryId]: true })
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setSaveSuccess((prev) => ({ ...prev, [categoryId]: false }))
+      }, 3000)
+    } catch (err) {
+      console.error(`Error updating display settings for ${categoryId}:`, err)
+      setSaveErrors({ ...saveErrors, [categoryId]: 'Failed to save settings' })
+    } finally {
+      setSavingSettings({ ...savingSettings, [categoryId]: false })
+    }
+  }
+
+  // Component for displaying a category row
+  const CategoryRow = ({ categoryId }: { categoryId: string }) => {
+    const category = categoryDetails[categoryId]
+    if (!category) return null
+    
+    const displaySettings = category.displaySettings || { showOnHomePage: false, displayOrder: 999, tileColor: 'blue' }
+    
+    return (
+      <tr className="border-b dark:border-gray-700">
+        <td className="py-4 px-6">{category.title}</td>
+        <td className="py-4 px-6">
+          <div className="flex items-center">
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={displaySettings.showOnHomePage}
+                onChange={() => handleToggleHomePageDisplay(categoryId)}
+                disabled={savingSettings[categoryId]}
+              />
+              <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+        </td>
+        <td className="py-4 px-6">
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              min="1"
+              max="999"
+              value={homePageOrder[categoryId] || displaySettings.displayOrder || 999}
+              onChange={(e) => handleOrderChange(categoryId, parseInt(e.target.value))}
+              className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+              disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
+            />
+            <button
+              onClick={() => handleSaveOrder(categoryId)}
+              disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
+              className="px-2 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50"
+            >
+              Save
+            </button>
+          </div>
+        </td>
+        <td className="py-4 px-6">
+          <select
+            value={displaySettings.tileColor || 'blue'}
+            onChange={(e) => handleColorChange(categoryId, e.target.value)}
+            disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
+            className="px-2 py-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+          >
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="red">Red</option>
+            <option value="yellow">Yellow</option>
+            <option value="purple">Purple</option>
+            <option value="gray">Gray</option>
+            <option value="indigo">Indigo</option>
+            <option value="teal">Teal</option>
+          </select>
+        </td>
+        <td className="py-4 px-6">
+          {saveSuccess[categoryId] && (
+            <span className="text-green-600 dark:text-green-400">Settings saved!</span>
+          )}
+          {saveErrors[categoryId] && (
+            <span className="text-red-600 dark:text-red-400">{saveErrors[categoryId]}</span>
+          )}
+        </td>
+        <td className="py-4 px-6">
+          <Link
+            href={`/admin/categories/${categoryId}?admin=true`}
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+          >
+            View/Edit
+          </Link>
+        </td>
+      </tr>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8 dark:text-gray-100">Category Management</h1>
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading categories...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold dark:text-gray-100">Category Management</h1>
         <Link
-          href="/admin/categories/new"
+          href="/admin/categories/new?admin=true"
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 font-medium"
         >
           Create New Category
         </Link>
       </div>
 
-      {loading ? (
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading categories...</p>
-        </div>
-      ) : error ? (
+      {error && (
         <div className="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded mb-4">
           <p>{error}</p>
         </div>
-      ) : categories.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">No categories found</h3>
+      )}
+
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden mb-8">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold dark:text-gray-200">Home Page Display Settings</h2>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Get started by creating a new category.
+            Configure which categories appear on the home page and their display order.
           </p>
         </div>
-      ) : (
-        <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-900">
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Category ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Title
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="py-3 px-6 font-medium">Category</th>
+                <th className="py-3 px-6 font-medium">Show on Home</th>
+                <th className="py-3 px-6 font-medium">Display Order</th>
+                <th className="py-3 px-6 font-medium">Tile Color</th>
+                <th className="py-3 px-6 font-medium">Status</th>
+                <th className="py-3 px-6 font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody>
               {categories.map((categoryId) => (
                 <CategoryRow key={categoryId} categoryId={categoryId} />
               ))}
             </tbody>
           </table>
         </div>
-      )}
+      </div>
 
       <div className="mt-8 bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
         <h3 className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-2">How to manage categories</h3>
@@ -95,56 +299,5 @@ export default function CategoryAdminPage() {
         </ul>
       </div>
     </div>
-  )
-}
-
-function CategoryRow({ categoryId }: { categoryId: string }) {
-  const [title, setTitle] = useState<string>('Loading...')
-  
-  useEffect(() => {
-    // Fetch category from the API
-    const fetchCategory = async () => {
-      try {
-        const response = await fetch(`/api/categories/${categoryId}`);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch category: ${response.statusText}`);
-        }
-        
-        const data: ProductContent = await response.json();
-        setTitle(data.title);
-      } catch (err) {
-        console.error(`Error loading category ${categoryId}:`, err);
-        setTitle('Error: Could not load title');
-      }
-    };
-
-    fetchCategory();
-  }, [categoryId])
-  
-  return (
-    <tr>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-        {categoryId}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-        {title}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <Link
-          href={`/admin/categories/${categoryId}`}
-          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4"
-        >
-          View/Edit
-        </Link>
-        <Link
-          href={`/tickets/${categoryId}`}
-          className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
-          target="_blank"
-        >
-          View Page
-        </Link>
-      </td>
-    </tr>
   )
 } 

@@ -22,4 +22,9 @@ export type ProductContent = {
     role: string;
     email: string;
   };
+  displaySettings?: {
+    showOnHomePage: boolean;
+    displayOrder: number;
+    tileColor?: string;
+  };
 } 
