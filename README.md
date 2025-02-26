@@ -1,3 +1,126 @@
+# Product Feedback Portal
+
+A Next.js application for collecting and managing product feedback across different categories.
+
+## Overview
+
+This application provides a platform for users to:
+
+- Browse different product categories
+- View detailed information about each product area
+- Submit feedback and ideas for specific product categories
+- Contact product owners directly
+
+For administrators, the system offers:
+- A comprehensive admin interface for managing categories
+- Tools to customize how categories appear on the home page
+- Ability to configure custom submission buttons for each category
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18.x or higher
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/product-feedback-portal.git
+cd product-feedback-portal
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+## Admin Access
+
+The admin interface is protected by a simple authentication mechanism:
+
+1. To access any admin page, append `?admin=true` to the URL
+2. Example: `http://localhost:3000/admin/categories?admin=true`
+
+Available admin routes:
+- `/admin/categories?admin=true` - List and manage all categories
+- `/admin/categories/[categoryId]?admin=true` - Edit a specific category
+- `/admin/categories/new?admin=true` - Create a new category
+
+> **Note**: This is a simplified authentication mechanism for demonstration purposes. In a production environment, you should implement proper authentication with user accounts, sessions, and secure login.
+
+## Key Features
+
+### Dynamic Category Management
+
+- Categories are stored as individual JSON files
+- New categories can be added without code changes
+- Each category has its own dedicated page
+
+### Home Page Configuration
+
+- Control which categories appear on the home page
+- Set display order for categories
+- Choose custom colors for category tiles
+
+### Custom Submission Buttons
+
+- Each category can have a custom "Submit New Idea" button
+- Customize button text and destination URL
+- Direct users to different submission forms based on category
+
+### Responsive Design
+
+- Works on desktop, tablet, and mobile devices
+- Dark mode support
+- Accessible UI components
+
+## Project Structure
+
+```
+├── app/
+│   ├── admin/                 # Admin interface pages
+│   ├── api/                   # API routes
+│   ├── config/                # Configuration files
+│   │   ├── categories/        # Category JSON files
+│   │   └── category-manager.ts # Category management utility
+│   ├── tickets/               # Category pages
+│   └── page.tsx               # Home page
+├── components/                # Reusable UI components
+├── middleware.ts              # Authentication middleware
+├── public/                    # Static assets
+└── docs/                      # Documentation
+    └── CATEGORY_MANAGEMENT.md # Detailed category management docs
+```
+
+## Documentation
+
+For more detailed information about the category management system, see [CATEGORY_MANAGEMENT.md](docs/CATEGORY_MANAGEMENT.md).
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat(component): add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
 # OFS - Micro Frontend Application
 
 This project is a micro frontend OFS built with Next.js, featuring dynamic tabs, dark mode, and an admin panel for configuration.

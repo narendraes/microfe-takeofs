@@ -48,5 +48,9 @@
     "name": "Michael Chen",
     "role": "Directed Pay Lead",
     "email": "michael.chen@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 5
   }
 }

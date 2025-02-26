@@ -13,6 +13,8 @@ export default function NewCategoryPage() {
   const [showOnHomePage, setShowOnHomePage] = useState(false)
   const [displayOrder, setDisplayOrder] = useState(999)
   const [tileColor, setTileColor] = useState('blue')
+  const [submitButtonText, setSubmitButtonText] = useState('Submit New Idea')
+  const [submitButtonUrl, setSubmitButtonUrl] = useState('')
   
   // Default template for a new category
   const defaultCategory: ProductContent = {
@@ -21,7 +23,7 @@ export default function NewCategoryPage() {
     sections: [
       {
         title: 'What We Do',
-        content: 'Describe what this category/team does.',
+        content: 'Describe what this category or team does.',
         subsections: [
           {
             title: 'Key Focus Areas',
@@ -49,9 +51,13 @@ export default function NewCategoryPage() {
       email: ''
     },
     displaySettings: {
-      showOnHomePage: false,
-      displayOrder: 999,
-      tileColor: 'blue'
+      showOnHomePage,
+      displayOrder,
+      tileColor
+    },
+    submitButton: {
+      text: submitButtonText,
+      url: submitButtonUrl
     }
   }
   
@@ -61,32 +67,36 @@ export default function NewCategoryPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!categoryId.trim()) {
+    if (!categoryId) {
       setError('Category ID is required')
       return
     }
     
     // Validate category ID format (lowercase, no spaces, only hyphens)
-    const categoryIdRegex = /^[a-z0-9-]+$/
-    if (!categoryIdRegex.test(categoryId)) {
+    if (!/^[a-z0-9-]+$/.test(categoryId)) {
       setError('Category ID must be lowercase with no spaces (use hyphens instead)')
       return
     }
     
-    setSaving(true)
-    setError(null)
-    
-    // Update display settings
-    const updatedCategory = {
-      ...category,
-      displaySettings: {
-        showOnHomePage,
-        displayOrder,
-        tileColor
-      }
-    }
-    
     try {
+      setSaving(true)
+      setError(null)
+      
+      // Create updated category with all fields
+      const updatedCategory = {
+        ...defaultCategory,
+        title: defaultCategory.title || categoryId,
+        displaySettings: {
+          showOnHomePage,
+          displayOrder,
+          tileColor
+        },
+        submitButton: {
+          text: submitButtonText,
+          url: submitButtonUrl
+        }
+      }
+      
       const response = await fetch('/api/categories', {
         method: 'POST',
         headers: {
@@ -103,11 +113,12 @@ export default function NewCategoryPage() {
         throw new Error(data.error || 'Failed to create category')
       }
       
-      // Redirect to the category edit page
+      // Redirect to edit page
       router.push(`/admin/categories/${categoryId}?admin=true`)
     } catch (err: any) {
       console.error('Error creating category:', err)
       setError(err.message || 'Failed to create category. Please try again.')
+    } finally {
       setSaving(false)
     }
   }
@@ -305,6 +316,45 @@ export default function NewCategoryPage() {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
                 required
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Button Settings */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Submit Button Settings</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Customize the "Submit New Idea" button that appears on the category page.
+          </p>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Button Text
+              </label>
+              <input
+                type="text"
+                value={submitButtonText}
+                onChange={(e) => setSubmitButtonText(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                placeholder="Submit New Idea"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Button URL
+              </label>
+              <input
+                type="text"
+                value={submitButtonUrl}
+                onChange={(e) => setSubmitButtonUrl(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                placeholder="https://example.com/submit-idea"
+              />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Enter the full URL where users will be directed when they click the button.
+              </p>
             </div>
           </div>
         </div>

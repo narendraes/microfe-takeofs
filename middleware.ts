@@ -1,8 +1,20 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// This middleware protects admin routes
-// In a real application, you would implement proper authentication
+/**
+ * Authentication Middleware
+ * 
+ * This middleware protects admin routes by checking for the presence of an 'admin=true' query parameter.
+ * 
+ * IMPORTANT: This is a simplified authentication mechanism for development purposes only.
+ * In a production environment, you should implement a proper authentication system with:
+ * - User accounts and secure login
+ * - JWT or session-based authentication
+ * - Role-based access control
+ * - Secure password storage
+ * 
+ * See docs/AUTHENTICATION.md for recommended improvements and implementation options.
+ */
 export function middleware(request: NextRequest) {
   // Add detailed logging of the request
   console.log('Middleware triggered for path:', request.nextUrl.pathname);
@@ -14,7 +26,7 @@ export function middleware(request: NextRequest) {
     console.log('Admin route detected, checking authentication');
     
     // For now, we're using a simple query parameter for "authentication"
-    // In a real app, you would use a proper authentication system
+    // In a real app, you would verify a JWT token or session cookie here
     const isAdmin = request.nextUrl.searchParams.get('admin') === 'true'
     console.log('Is admin?', isAdmin);
     
@@ -46,7 +58,12 @@ export function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-// Only run the middleware on admin routes
+/**
+ * Middleware Configuration
+ * 
+ * This configuration ensures the middleware only runs on admin routes,
+ * which improves performance by not running authentication checks on public routes.
+ */
 export const config = {
   matcher: '/admin/:path*',
 } 

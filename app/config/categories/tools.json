@@ -48,5 +48,10 @@
     "name": "Alex Turner",
     "role": "Developer Tools Lead",
     "email": "alex.turner@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 3,
+    "tileColor": "gray"
   }
 }

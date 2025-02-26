@@ -48,5 +48,9 @@
     "name": "Robert Kim",
     "role": "Commercial Provider Lead",
     "email": "robert.kim@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 99
   }
 }

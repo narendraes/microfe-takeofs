@@ -48,5 +48,9 @@
     "name": "David Wilson",
     "role": "Commercial Pay Lead",
     "email": "david.wilson@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 99
   }
 }

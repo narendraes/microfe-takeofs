@@ -48,5 +48,9 @@
     "name": "Emily Zhang",
     "role": "Data Engineering Lead",
     "email": "emily.zhang@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 5
   }
 }

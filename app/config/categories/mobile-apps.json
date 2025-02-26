@@ -48,5 +48,9 @@
     "name": "Alex Johnson",
     "role": "Mobile Apps Team Lead",
     "email": "alex.johnson@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 3
   }
-} 
+}

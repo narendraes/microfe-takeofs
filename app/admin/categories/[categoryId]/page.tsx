@@ -16,6 +16,8 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
   const [showOnHomePage, setShowOnHomePage] = useState(false)
   const [displayOrder, setDisplayOrder] = useState(999)
   const [tileColor, setTileColor] = useState('blue')
+  const [submitButtonText, setSubmitButtonText] = useState('Submit New Idea')
+  const [submitButtonUrl, setSubmitButtonUrl] = useState('')
   
   // Fetch category data
   useEffect(() => {
@@ -36,6 +38,12 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
         setShowOnHomePage(data.displaySettings?.showOnHomePage || false);
         setDisplayOrder(data.displaySettings?.displayOrder || 999);
         setTileColor(data.displaySettings?.tileColor || 'blue');
+        
+        // Initialize submit button settings
+        if (data.submitButton) {
+          setSubmitButtonText(data.submitButton.text || 'Submit New Idea');
+          setSubmitButtonUrl(data.submitButton.url || '');
+        }
         
         setError(null);
       } catch (err) {
@@ -66,6 +74,10 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
         showOnHomePage,
         displayOrder,
         tileColor
+      },
+      submitButton: {
+        text: submitButtonText,
+        url: submitButtonUrl
       }
     };
     
@@ -419,6 +431,45 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
                 required
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Button Settings */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Submit Button Settings</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Customize the "Submit New Idea" button that appears on the category page.
+          </p>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Button Text
+              </label>
+              <input
+                type="text"
+                value={submitButtonText}
+                onChange={(e) => setSubmitButtonText(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                placeholder="Submit New Idea"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Button URL
+              </label>
+              <input
+                type="text"
+                value={submitButtonUrl}
+                onChange={(e) => setSubmitButtonUrl(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                placeholder="https://example.com/submit-idea"
+              />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Enter the full URL where users will be directed when they click the button.
+              </p>
             </div>
           </div>
         </div>

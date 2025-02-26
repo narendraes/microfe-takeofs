@@ -1,5 +1,5 @@
 {
-  "title": "Health Benefit Administration",
+  "title": "HBA",
   "description": "Submit ideas for health benefit administration systems and processes.",
   "sections": [
     {
@@ -48,5 +48,10 @@
     "name": "Lisa Martinez",
     "role": "HBA Lead",
     "email": "lisa.martinez@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 2,
+    "tileColor": "blue"
   }
 }

@@ -48,5 +48,9 @@
     "name": "Someone",
     "role": "Banking Products Lead2",
     "email": "jane.smith@company1.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 1
   }
 }

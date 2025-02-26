@@ -34,5 +34,9 @@
     "name": "person",
     "role": "someone",
     "email": "someone@something.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 3
   }
 }

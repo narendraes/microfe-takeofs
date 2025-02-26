@@ -48,5 +48,9 @@
     "name": "Thomas Anderson",
     "role": "CAMS & RRA Lead",
     "email": "thomas.anderson@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 2
   }
 }

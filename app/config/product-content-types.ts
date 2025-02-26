@@ -27,4 +27,8 @@ export type ProductContent = {
     displayOrder: number;
     tileColor?: string;
   };
+  submitButton?: {
+    text: string;
+    url: string;
+  };
 } 

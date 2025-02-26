@@ -48,5 +48,9 @@
     "name": "Sarah Johnson",
     "role": "SSO & API Services Lead",
     "email": "sarah.johnson@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 3
   }
 }

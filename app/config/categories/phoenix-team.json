@@ -48,5 +48,9 @@
     "name": "Rachel Wong",
     "role": "Phoenix Team Lead",
     "email": "rachel.wong@company.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 2
   }
 }

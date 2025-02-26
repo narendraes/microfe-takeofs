@@ -72,22 +72,21 @@ export default function CategoryAdminPage() {
   }
 
   // Handle changing display order
-  const handleOrderChange = (categoryId: string, order: number) => {
+  const handleOrderChange = async (categoryId: string, order: number) => {
+    // Update local state first for immediate UI feedback
     setHomePageOrder({
       ...homePageOrder,
       [categoryId]: order
     })
-  }
-
-  // Handle saving display order
-  const handleSaveOrder = async (categoryId: string) => {
+    
+    // Then save to the server
     const category = categoryDetails[categoryId]
     if (!category) return
     
     const currentSettings = category.displaySettings || { showOnHomePage: false, displayOrder: 999 }
     const newSettings = {
       ...currentSettings,
-      displayOrder: homePageOrder[categoryId] || 999
+      displayOrder: order
     }
     
     await updateDisplaySettings(categoryId, newSettings)
@@ -174,7 +173,7 @@ export default function CategoryAdminPage() {
           </div>
         </td>
         <td className="py-4 px-6">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center">
             <input
               type="number"
               min="1"
@@ -184,13 +183,6 @@ export default function CategoryAdminPage() {
               className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
               disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
             />
-            <button
-              onClick={() => handleSaveOrder(categoryId)}
-              disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
-              className="px-2 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50"
-            >
-              Save
-            </button>
           </div>
         </td>
         <td className="py-4 px-6">
