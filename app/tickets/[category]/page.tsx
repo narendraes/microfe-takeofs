@@ -56,6 +56,19 @@ export default function TicketPage({ params }: { params: { category: string } })
     )
   }
 
+  // Function to ensure URL is properly formatted with protocol
+  const formatUrl = (url: string): string => {
+    if (!url) return '#';
+    
+    // Check if the URL already has a protocol
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // Add https:// protocol if missing
+    return `https://${url}`;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-4 dark:text-gray-100">{content.title}</h1>
@@ -81,7 +94,7 @@ export default function TicketPage({ params }: { params: { category: string } })
           <ContactInfo {...content.contactInfo} />
           
           <a 
-            href={content.submitButton?.url || '#'} 
+            href={formatUrl(content.submitButton?.url || '#')} 
             target="_blank" 
             rel="noopener noreferrer"
             className="block w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 font-medium shadow-sm transition-colors text-center"

@@ -469,6 +469,7 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
               />
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Enter the full URL where users will be directed when they click the button.
+                Make sure to include the protocol (https:// or http://) for external URLs.
               </p>
             </div>
           </div>
