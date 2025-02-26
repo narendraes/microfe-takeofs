@@ -1,0 +1,52 @@
+{
+  "title": "Development Tools",
+  "description": "Submit ideas for developer tools and productivity solutions.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We develop and maintain tools that enhance developer productivity and code quality.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Development Environments",
+            "CI/CD Pipeline",
+            "Code Quality Tools",
+            "Testing Frameworks",
+            "Developer Productivity"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're focusing on automating development workflows and improving tool integration.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Automated Testing Framework",
+            "DevOps Pipeline Enhancement",
+            "Code Analysis Tools",
+            "Development Metrics Dashboard"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Specify tool requirements",
+      "Include developer impact analysis",
+      "Detail integration needs",
+      "Outline performance expectations",
+      "Provide adoption considerations"
+    ]
+  },
+  "contactInfo": {
+    "name": "Alex Turner",
+    "role": "Developer Tools Lead",
+    "email": "alex.turner@company.com"
+  }
+}

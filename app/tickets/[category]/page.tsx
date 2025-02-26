@@ -1,10 +1,11 @@
 'use client'
 
 import { notFound } from "next/navigation"
-import { productContent } from "@/app/config/product-content"
+import { CategoryManager } from "@/app/config/category-manager"
 import { ProductSection, GuidelinesSection, ContactInfo } from "@/src/components/product-section"
 import Script from "next/script"
 import { useEffect } from "react"
+import { ProductContent } from "@/app/config/product-content-types"
 
 // Extend Window interface to include Jira properties
 declare global {
@@ -15,18 +16,8 @@ declare global {
   }
 }
 
-const validCategories = [
-  "bank",
-  "directed-pay",
-  "sso-api",
-  "commercial-pay",
-  "commercial-provider",
-  "data-engineering",
-  "hba",
-  "cams-rra",
-  "tools",
-  "phoenix-team",
-]
+// Create an instance of the CategoryManager
+const categoryManager = new CategoryManager();
 
 export default function TicketPage({ params }: { params: { category: string } }) {
   useEffect(() => {
@@ -73,11 +64,15 @@ export default function TicketPage({ params }: { params: { category: string } })
     };
   }, [params.category]);
 
+  // Get valid categories from CategoryManager
+  const validCategories = categoryManager.getValidCategories();
+  
   if (!validCategories.includes(params.category)) {
     notFound()
   }
 
-  const content = productContent[params.category]
+  // Get category content from CategoryManager
+  const content = categoryManager.getCategoryContent(params.category) as ProductContent;
   
   if (!content) {
     return (
@@ -131,7 +126,7 @@ export default function TicketPage({ params }: { params: { category: string } })
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          {content.sections.map((section, index) => (
+          {content.sections.map((section: ProductContent['sections'][0], index: number) => (
             <ProductSection 
               key={index}
               title={section.title}

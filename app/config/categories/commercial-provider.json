@@ -1,0 +1,52 @@
+{
+  "title": "Commercial Provider",
+  "description": "Submit ideas for commercial provider integration and management solutions.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We manage provider relationships and develop integration solutions for commercial services.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Provider Integration",
+            "Service Management",
+            "Provider Onboarding",
+            "Contract Management",
+            "Performance Monitoring"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're streamlining provider integration processes and enhancing monitoring capabilities.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Automated Provider Onboarding",
+            "Real-time Performance Tracking",
+            "Integration Framework Enhancement",
+            "Provider Analytics Platform"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Specify provider requirements",
+      "Include integration details",
+      "Outline service level agreements",
+      "Detail compliance needs",
+      "Provide scalability considerations"
+    ]
+  },
+  "contactInfo": {
+    "name": "Robert Kim",
+    "role": "Commercial Provider Lead",
+    "email": "robert.kim@company.com"
+  }
+}

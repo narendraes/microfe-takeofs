@@ -1,0 +1,52 @@
+{
+  "title": "SSO & API Services",
+  "description": "Submit enhancement requests and ideas for our Single Sign-On and API infrastructure.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We provide secure authentication solutions and API management services across the organization.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Single Sign-On Solutions",
+            "API Gateway Management",
+            "Authentication Services",
+            "API Security",
+            "Developer Experience"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "Our focus is on enhancing API security and improving developer experience.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "OAuth 2.0 Implementation",
+            "API Documentation Automation",
+            "Rate Limiting Enhancement",
+            "API Analytics Dashboard"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Specify authentication requirements",
+      "Include API specifications",
+      "Detail security implications",
+      "Provide use case examples",
+      "Include performance requirements"
+    ]
+  },
+  "contactInfo": {
+    "name": "Sarah Johnson",
+    "role": "SSO & API Services Lead",
+    "email": "sarah.johnson@company.com"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "title": "CAMS & RRA",
+  "description": "Submit ideas for Compliance and Risk Assessment Management solutions.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We provide compliance monitoring and risk assessment tools across the organization.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Compliance Monitoring",
+            "Risk Assessment",
+            "Audit Management",
+            "Regulatory Reporting",
+            "Policy Management"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're enhancing our compliance monitoring capabilities and automating risk assessments.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Automated Risk Scoring",
+            "Real-time Compliance Monitoring",
+            "Integrated Policy Management",
+            "Enhanced Reporting Dashboard"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Specify regulatory requirements",
+      "Include risk assessment impact",
+      "Detail monitoring requirements",
+      "Outline reporting needs",
+      "Provide compliance considerations"
+    ]
+  },
+  "contactInfo": {
+    "name": "Thomas Anderson",
+    "role": "CAMS & RRA Lead",
+    "email": "thomas.anderson@company.com"
+  }
+}

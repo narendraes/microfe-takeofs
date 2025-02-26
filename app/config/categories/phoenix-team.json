@@ -1,0 +1,52 @@
+{
+  "title": "Phoenix Team",
+  "description": "Submit ideas for system modernization and transformation initiatives.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We lead strategic transformation initiatives and system modernization efforts.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "System Modernization",
+            "Legacy Migration",
+            "Architecture Transformation",
+            "Technology Innovation",
+            "Digital Transformation"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're focusing on modernizing core systems and implementing innovative solutions.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Cloud Migration",
+            "Microservices Architecture",
+            "API-First Strategy",
+            "Innovation Lab"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Include transformation impact",
+      "Specify modernization benefits",
+      "Detail technical requirements",
+      "Outline risk mitigation",
+      "Provide success metrics"
+    ]
+  },
+  "contactInfo": {
+    "name": "Rachel Wong",
+    "role": "Phoenix Team Lead",
+    "email": "rachel.wong@company.com"
+  }
+}

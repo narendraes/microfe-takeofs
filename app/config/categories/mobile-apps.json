@@ -1,0 +1,52 @@
+{
+  "title": "Mobile Applications",
+  "description": "Submit ideas and feature requests for our mobile applications and services.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We develop and maintain mobile applications for iOS and Android platforms that serve our customers and employees.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Customer-facing Mobile Apps",
+            "Internal Employee Tools",
+            "Mobile UI/UX Design",
+            "Cross-platform Development",
+            "Mobile Security"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "Our team is focused on enhancing the user experience and adding new features to our mobile applications.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Biometric Authentication",
+            "Push Notification System",
+            "Offline Mode Capabilities",
+            "Performance Optimization"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Specify target platforms (iOS, Android, or both)",
+      "Include user experience considerations",
+      "Detail required device capabilities",
+      "Identify target user segments",
+      "Consider offline vs. online requirements"
+    ]
+  },
+  "contactInfo": {
+    "name": "Alex Johnson",
+    "role": "Mobile Apps Team Lead",
+    "email": "alex.johnson@company.com"
+  }
+} 

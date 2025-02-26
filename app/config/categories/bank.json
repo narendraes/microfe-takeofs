@@ -1,0 +1,52 @@
+{
+  "title": "Banking Products",
+  "description": "Welcome to the Banking Products intake portal. Here you can submit new ideas and feature requests for our banking solutions.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We provide core banking infrastructure and solutions that power financial services across the organization.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Core Banking Systems",
+            "Account Management",
+            "Transaction Processing",
+            "Financial Reporting",
+            "Regulatory Compliance"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "Our team is focused on modernizing core banking infrastructure and improving system reliability.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "API Modernization",
+            "Real-time Processing",
+            "Cloud Migration",
+            "Security Enhancements"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Clearly define the business problem you're trying to solve",
+      "Include expected impact and benefits",
+      "Provide technical requirements if applicable",
+      "Identify target users and stakeholders",
+      "Outline any regulatory considerations"
+    ]
+  },
+  "contactInfo": {
+    "name": "Jane Smith",
+    "role": "Banking Products Lead",
+    "email": "jane.smith@company.com"
+  }
+}

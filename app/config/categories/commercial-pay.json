@@ -1,0 +1,52 @@
+{
+  "title": "Commercial Pay",
+  "description": "Submit ideas for commercial payment solutions and business payment processing.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We develop and maintain commercial payment solutions for business customers.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Business Payment Processing",
+            "Commercial Cards",
+            "Expense Management",
+            "Vendor Payments",
+            "Payment Analytics"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're focusing on digital transformation of commercial payments.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Virtual Card Solutions",
+            "Automated Reconciliation",
+            "Integrated Expense Management",
+            "Real-time Payment Tracking"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Define business use case",
+      "Include market analysis",
+      "Specify integration needs",
+      "Outline compliance requirements",
+      "Provide ROI projections"
+    ]
+  },
+  "contactInfo": {
+    "name": "David Wilson",
+    "role": "Commercial Pay Lead",
+    "email": "david.wilson@company.com"
+  }
+}

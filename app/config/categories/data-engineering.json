@@ -1,0 +1,52 @@
+{
+  "title": "Data Engineering",
+  "description": "Submit ideas for data infrastructure, pipelines, and analytics solutions.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We build and maintain data infrastructure and analytics capabilities.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Data Pipeline Development",
+            "Data Warehouse Management",
+            "Real-time Analytics",
+            "Data Quality",
+            "Data Governance"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're focusing on modernizing our data infrastructure and improving data accessibility.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Real-time Data Processing",
+            "Machine Learning Infrastructure",
+            "Data Lake Implementation",
+            "Self-service Analytics"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Specify data requirements",
+      "Include performance metrics",
+      "Detail integration needs",
+      "Outline security considerations",
+      "Provide scaling projections"
+    ]
+  },
+  "contactInfo": {
+    "name": "Emily Zhang",
+    "role": "Data Engineering Lead",
+    "email": "emily.zhang@company.com"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "title": "Directed Pay",
+  "description": "Submit ideas and feature requests for our directed payment processing solutions and infrastructure.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We manage and optimize payment routing, processing, and reconciliation across multiple payment channels.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Payment Processing Infrastructure",
+            "Transaction Routing",
+            "Settlement Systems",
+            "Payment Reconciliation",
+            "Payment Gateway Integration"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're focusing on expanding our payment capabilities and improving processing efficiency.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Real-time Payment Processing",
+            "Cross-border Payment Solutions",
+            "Payment Security Enhancement",
+            "Integration with New Payment Methods"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Include payment flow specifications",
+      "Specify integration requirements",
+      "Detail security considerations",
+      "Outline compliance requirements",
+      "Provide volume projections"
+    ]
+  },
+  "contactInfo": {
+    "name": "Michael Chen",
+    "role": "Directed Pay Lead",
+    "email": "michael.chen@company.com"
+  }
+}

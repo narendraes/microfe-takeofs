@@ -1,0 +1,52 @@
+{
+  "title": "Health Benefit Administration",
+  "description": "Submit ideas for health benefit administration systems and processes.",
+  "sections": [
+    {
+      "title": "What We Do",
+      "content": "We develop and maintain systems for managing health benefits and claims processing.",
+      "subsections": [
+        {
+          "title": "Key Focus Areas",
+          "items": [
+            "Benefits Administration",
+            "Claims Processing",
+            "Member Management",
+            "Provider Networks",
+            "Compliance Management"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Current Priorities",
+      "content": "We're focusing on modernizing benefits administration and improving member experience.",
+      "subsections": [
+        {
+          "title": "2024 Initiatives",
+          "items": [
+            "Digital Claims Processing",
+            "Member Portal Enhancement",
+            "Automated Eligibility Verification",
+            "Real-time Benefits Information"
+          ]
+        }
+      ]
+    }
+  ],
+  "guidelines": {
+    "title": "Submission Guidelines",
+    "items": [
+      "Include member impact analysis",
+      "Specify compliance requirements",
+      "Detail integration needs",
+      "Outline performance metrics",
+      "Provide security considerations"
+    ]
+  },
+  "contactInfo": {
+    "name": "Lisa Martinez",
+    "role": "HBA Lead",
+    "email": "lisa.martinez@company.com"
+  }
+}
