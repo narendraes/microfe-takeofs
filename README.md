@@ -89,19 +89,22 @@ Available admin routes:
 
 ## Project Structure
 
+The project is organized as follows:
+
 ```
-├── app/
-│   ├── admin/                 # Admin interface pages
-│   ├── api/                   # API routes
-│   ├── config/                # Configuration files
-│   │   ├── categories/        # Category JSON files
+├── app/                   # Next.js 13+ app directory
+│   ├── admin/             # Admin interface pages
+│   ├── api/               # API routes
+│   ├── config/            # Configuration files
+│   │   ├── categories/    # Category JSON files
 │   │   └── category-manager.ts # Category management utility
-│   ├── tickets/               # Category pages
-│   └── page.tsx               # Home page
-├── components/                # Reusable UI components
-├── middleware.ts              # Authentication middleware
-├── public/                    # Static assets
-└── docs/                      # Documentation
+│   ├── idea-contributor-access/ # Idea contributor guide
+│   ├── tickets/           # Category pages
+│   └── page.tsx           # Home page
+├── components/            # Reusable UI components
+├── middleware.ts          # Authentication middleware
+├── public/                # Static assets
+└── docs/                  # Documentation
     └── CATEGORY_MANAGEMENT.md # Detailed category management docs
 ```
 
@@ -177,7 +180,6 @@ The application includes markdown-based content pages for documentation and guid
 ### Editing Markdown Pages
 
 1. Navigate to the respective page directory:
-   - OF Jira Access: `app/of-jira-access/page.tsx`
    - Idea Contributor Access: `app/idea-contributor-access/page.tsx`
 
 2. The content is structured using TypeScript/React components with Tailwind CSS styling.
@@ -329,15 +331,20 @@ For manual deployment to your own server:
 The project is organized as follows:
 
 ```
-corporate-portal/
-├── app/                    # Next.js 13+ app directory
-│   ├── of-jira-access/    # OF Jira access guide
+├── app/                   # Next.js 13+ app directory
+│   ├── admin/             # Admin interface pages
+│   ├── api/               # API routes
+│   ├── config/            # Configuration files
+│   │   ├── categories/    # Category JSON files
+│   │   └── category-manager.ts # Category management utility
 │   ├── idea-contributor-access/ # Idea contributor guide
-│   └── ...
-├── components/            # Reusable components
-├── public/               # Static assets
-├── styles/              # Global styles
-└── ...
+│   ├── tickets/           # Category pages
+│   └── page.tsx           # Home page
+├── components/            # Reusable UI components
+├── middleware.ts          # Authentication middleware
+├── public/                # Static assets
+└── docs/                  # Documentation
+    └── CATEGORY_MANAGEMENT.md # Detailed category management docs
 ```
 
 ## Contributing
