@@ -1,6 +1,19 @@
+'use client'
+
 import { notFound } from "next/navigation"
 import { productContent } from "@/app/config/product-content"
 import { ProductSection, GuidelinesSection, ContactInfo } from "@/src/components/product-section"
+import Script from "next/script"
+import { useEffect } from "react"
+
+// Extend Window interface to include Jira properties
+declare global {
+  interface Window {
+    ATL_JQ_PAGE_PROPS: any;
+    jQuery: any;
+    $: any;
+  }
+}
 
 const validCategories = [
   "bank",
@@ -16,6 +29,50 @@ const validCategories = [
 ]
 
 export default function TicketPage({ params }: { params: { category: string } }) {
+  useEffect(() => {
+    const initJiraCollector = () => {
+      if (window.jQuery) {
+        try {
+          window.ATL_JQ_PAGE_PROPS = {
+            triggerPosition: "bottom-right",
+            triggerText: "Support",
+            collectFeedback: true,
+            fieldValues: {
+              summary: `Feedback from ${params.category} category page`,
+            }
+          };
+          console.log("Jira collector initialized with config:", window.ATL_JQ_PAGE_PROPS);
+        } catch (error) {
+          console.error("Failed to initialize Jira collector:", error);
+        }
+      }
+    };
+
+    // Check if jQuery is loaded with retry mechanism
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    const checkJQuery = () => {
+      if (window.jQuery) {
+        console.log("jQuery detected, version:", window.jQuery.fn.jquery);
+        initJiraCollector();
+      } else if (retryCount < maxRetries) {
+        retryCount++;
+        console.log(`jQuery not found, retrying (${retryCount}/${maxRetries})...`);
+        setTimeout(checkJQuery, 1000); // Retry after 1 second
+      } else {
+        console.error("jQuery not loaded after maximum retries - Jira Issue Collector may not work");
+      }
+    };
+
+    checkJQuery();
+
+    return () => {
+      // Cleanup if needed
+      retryCount = maxRetries; // Prevent further retries
+    };
+  }, [params.category]);
+
   if (!validCategories.includes(params.category)) {
     notFound()
   }
@@ -27,12 +84,48 @@ export default function TicketPage({ params }: { params: { category: string } })
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 dark:text-gray-100">Content Coming Soon</h1>
         <p className="dark:text-gray-300">The content for this product area is being developed.</p>
+        
+        {/* jQuery Script */}
+        <Script
+          id="jquery"
+          src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+          strategy="beforeInteractive"
+          onLoad={() => console.log("jQuery loaded successfully")}
+          onError={(e) => console.error("Failed to load jQuery:", e)}
+        />
+        
+        {/* Jira Issue Collector Script */}
+        <Script
+          id="jira-issue-collector"
+          src="https://nkes.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/g2slup/b/0/c95134bc67d3a521bb3f4331beb9b804/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=898847bc"
+          strategy="afterInteractive"
+          onLoad={() => console.log("Jira collector script loaded successfully")}
+          onError={(e) => console.error("Failed to load Jira collector script:", e)}
+        />
       </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* jQuery Script */}
+      <Script
+        id="jquery"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        strategy="beforeInteractive"
+        onLoad={() => console.log("jQuery loaded successfully")}
+        onError={(e) => console.error("Failed to load jQuery:", e)}
+      />
+      
+      {/* Jira Issue Collector Script */}
+      <Script
+        id="jira-issue-collector"
+        src="https://nkes.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/g2slup/b/0/c95134bc67d3a521bb3f4331beb9b804/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=898847bc"
+        strategy="afterInteractive"
+        onLoad={() => console.log("Jira collector script loaded successfully")}
+        onError={(e) => console.error("Failed to load Jira collector script:", e)}
+      />
+      
       <h1 className="text-4xl font-bold mb-4 dark:text-gray-100">{content.title}</h1>
       <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{content.description}</p>
       
