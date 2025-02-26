@@ -25,16 +25,16 @@ export default function TicketPage({ params }: { params: { category: string } })
   if (!content) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Content Coming Soon</h1>
-        <p>The content for this product area is being developed.</p>
+        <h1 className="text-3xl font-bold mb-6 dark:text-gray-100">Content Coming Soon</h1>
+        <p className="dark:text-gray-300">The content for this product area is being developed.</p>
       </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-4">{content.title}</h1>
-      <p className="text-lg text-gray-600 mb-8">{content.description}</p>
+      <h1 className="text-4xl font-bold mb-4 dark:text-gray-100">{content.title}</h1>
+      <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{content.description}</p>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -55,7 +55,7 @@ export default function TicketPage({ params }: { params: { category: string } })
           />
           <ContactInfo {...content.contactInfo} />
           
-          <button className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 font-medium">
+          <button className="w-full bg-primary dark:bg-primary/90 text-white dark:text-white px-6 py-3 rounded-lg hover:bg-primary/90 dark:hover:bg-primary/70 font-medium shadow-sm dark:shadow-primary/20">
             Submit New Idea
           </button>
         </div>
