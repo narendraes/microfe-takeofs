@@ -37,6 +37,7 @@
   },
   "displaySettings": {
     "showOnHomePage": true,
-    "displayOrder": 3
+    "displayOrder": 3,
+    "tileColor": "purple"
   }
 }

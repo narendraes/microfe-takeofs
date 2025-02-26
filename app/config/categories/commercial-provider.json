@@ -51,6 +51,7 @@
   },
   "displaySettings": {
     "showOnHomePage": true,
-    "displayOrder": 99
+    "displayOrder": 99,
+    "tileColor": "gray"
   }
 }
