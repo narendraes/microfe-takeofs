@@ -55,7 +55,7 @@ export default function TicketPage({ params }: { params: { category: string } })
           />
           <ContactInfo {...content.contactInfo} />
           
-          <button className="w-full bg-primary dark:bg-primary/90 text-white dark:text-white px-6 py-3 rounded-lg hover:bg-primary/90 dark:hover:bg-primary/70 font-medium shadow-sm dark:shadow-primary/20">
+          <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 font-medium shadow-sm transition-colors">
             Submit New Idea
           </button>
         </div>
