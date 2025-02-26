@@ -1,3 +1,4 @@
+import 'server-only';
 import fs from 'fs';
 import path from 'path';
 import { ProductContent } from './product-content-types';
@@ -112,5 +113,12 @@ export class CategoryManager {
       console.error(`Error deleting category ${categoryId}:`, error);
       return false;
     }
+  }
+  
+  /**
+   * Gets a category by its slug/id
+   */
+  public getCategoryBySlug(slug: string): ProductContent | null {
+    return this.getCategoryContent(slug);
   }
 } 

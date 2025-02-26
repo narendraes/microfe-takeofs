@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { CategoryManager } from '@/app/config/category-manager'
 import { ProductContent } from '@/app/config/product-content-types'
 
 export default function CategoryAdminPage() {
@@ -11,20 +10,26 @@ export default function CategoryAdminPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // We need to use a dynamic import here because CategoryManager uses fs,
-    // which is only available on the server, not in the browser
-    import('@/app/config/category-manager').then(({ CategoryManager }) => {
-      const categoryManager = new CategoryManager()
+    // Fetch categories from the API
+    const fetchCategories = async () => {
       try {
-        const validCategories = categoryManager.getValidCategories()
-        setCategories(validCategories)
+        const response = await fetch('/api/categories');
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch categories: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        setCategories(data);
       } catch (err) {
-        console.error('Error loading categories:', err)
-        setError('Failed to load categories. Check the console for details.')
+        console.error('Error loading categories:', err);
+        setError('Failed to load categories. Check the console for details.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    })
+    };
+
+    fetchCategories();
   }, [])
 
   return (
@@ -97,21 +102,24 @@ function CategoryRow({ categoryId }: { categoryId: string }) {
   const [title, setTitle] = useState<string>('Loading...')
   
   useEffect(() => {
-    // We need to load the category data client-side
-    import('@/app/config/category-manager').then(({ CategoryManager }) => {
-      const categoryManager = new CategoryManager()
+    // Fetch category from the API
+    const fetchCategory = async () => {
       try {
-        const content = categoryManager.getCategoryContent(categoryId)
-        if (content) {
-          setTitle(content.title)
-        } else {
-          setTitle('Error: Could not load title')
+        const response = await fetch(`/api/categories/${categoryId}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch category: ${response.statusText}`);
         }
+        
+        const data: ProductContent = await response.json();
+        setTitle(data.title);
       } catch (err) {
-        console.error(`Error loading category ${categoryId}:`, err)
-        setTitle('Error: Could not load title')
+        console.error(`Error loading category ${categoryId}:`, err);
+        setTitle('Error: Could not load title');
       }
-    })
+    };
+
+    fetchCategory();
   }, [categoryId])
   
   return (

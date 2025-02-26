@@ -1,10 +1,9 @@
 'use client'
 
 import { notFound } from "next/navigation"
-import { CategoryManager } from "@/app/config/category-manager"
 import { ProductSection, GuidelinesSection, ContactInfo } from "@/src/components/product-section"
 import Script from "next/script"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { ProductContent } from "@/app/config/product-content-types"
 
 // Extend Window interface to include Jira properties
@@ -16,10 +15,38 @@ declare global {
   }
 }
 
-// Create an instance of the CategoryManager
-const categoryManager = new CategoryManager();
-
 export default function TicketPage({ params }: { params: { category: string } }) {
+  const [content, setContent] = useState<ProductContent | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  // Fetch category data from API
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        const response = await fetch(`/api/categories/${params.category}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            notFound();
+          }
+          throw new Error(`Failed to fetch category data: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        setContent(data);
+        setError(false);
+      } catch (err) {
+        console.error("Error fetching category data:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategoryData();
+  }, [params.category]);
+
   useEffect(() => {
     const initJiraCollector = () => {
       if (window.jQuery) {
@@ -64,17 +91,17 @@ export default function TicketPage({ params }: { params: { category: string } })
     };
   }, [params.category]);
 
-  // Get valid categories from CategoryManager
-  const validCategories = categoryManager.getValidCategories();
-  
-  if (!validCategories.includes(params.category)) {
-    notFound()
+  // Loading state
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[50vh]">
+        <div className="animate-pulse text-xl dark:text-gray-100">Loading...</div>
+      </div>
+    );
   }
 
-  // Get category content from CategoryManager
-  const content = categoryManager.getCategoryContent(params.category) as ProductContent;
-  
-  if (!content) {
+  // Error state
+  if (error || !content) {
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 dark:text-gray-100">Content Coming Soon</h1>
