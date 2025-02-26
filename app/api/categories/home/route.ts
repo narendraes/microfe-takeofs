@@ -13,7 +13,7 @@ export async function GET() {
       href: `/tickets/${id}`,
       color: content.displaySettings?.tileColor || 'blue',
       disabled: false,
-      openInNewTab: true
+      openInNewTab: false
     }));
     
     return NextResponse.json(formattedCategories);

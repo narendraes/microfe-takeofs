@@ -5,16 +5,16 @@ import { Tile, type TileData } from "./tile"
 
 // Default tiles as fallback
 const defaultTiles: TileData[] = [
-  { title: "Bank", href: "/tickets/bank", color: "blue", openInNewTab: true },
-  { title: "Directed Pay", href: "/tickets/directed-pay", color: "green", openInNewTab: true },
-  { title: "SSO/API", href: "/tickets/sso-api", color: "purple", openInNewTab: true },
-  { title: "Commercial Pay", href: "/tickets/commercial-pay", color: "indigo", openInNewTab: true },
-  { title: "Commercial Provider", href: "/tickets/commercial-provider", color: "teal", openInNewTab: true },
-  { title: "Data Engineering", href: "/tickets/data-engineering", color: "yellow", openInNewTab: true },
-  { title: "HBA", href: "/tickets/hba", color: "blue", openInNewTab: true },
-  { title: "CAMS/RRA", href: "/tickets/cams-rra", color: "purple", openInNewTab: true },
-  { title: "Tools", href: "/tickets/tools", color: "teal", openInNewTab: true },
-  { title: "Phoenix Team", href: "/tickets/phoenix-team", color: "red", openInNewTab: true },
+  { title: "Bank", href: "/tickets/bank", color: "blue", openInNewTab: false },
+  { title: "Directed Pay", href: "/tickets/directed-pay", color: "green", openInNewTab: false },
+  { title: "SSO/API", href: "/tickets/sso-api", color: "purple", openInNewTab: false },
+  { title: "Commercial Pay", href: "/tickets/commercial-pay", color: "indigo", openInNewTab: false },
+  { title: "Commercial Provider", href: "/tickets/commercial-provider", color: "teal", openInNewTab: false },
+  { title: "Data Engineering", href: "/tickets/data-engineering", color: "yellow", openInNewTab: false },
+  { title: "HBA", href: "/tickets/hba", color: "blue", openInNewTab: false },
+  { title: "CAMS/RRA", href: "/tickets/cams-rra", color: "purple", openInNewTab: false },
+  { title: "Tools", href: "/tickets/tools", color: "teal", openInNewTab: false },
+  { title: "Phoenix Team", href: "/tickets/phoenix-team", color: "red", openInNewTab: false },
 ]
 
 export function TileGrid() {

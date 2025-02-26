@@ -34,7 +34,7 @@ export function Tile({
   title, 
   href, 
   disabled = false, 
-  openInNewTab = true,
+  openInNewTab = false,
   color = "blue" 
 }: TileData) {
   const content = (
