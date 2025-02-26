@@ -29,6 +29,12 @@ export default function Home() {
               </td>
               <td className="px-4">|</td>
               <td className="py-2">
+                <Link href="/of-jira-access" className="underline hover:text-primary">
+                  OF Jira Access
+                </Link>
+              </td>
+              <td className="px-4">|</td>
+              <td className="py-2">
                 <Link href="/support" className="underline hover:text-primary">
                   Support
                 </Link>
