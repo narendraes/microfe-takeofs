@@ -51,6 +51,11 @@
   },
   "displaySettings": {
     "showOnHomePage": true,
-    "displayOrder": 1
+    "displayOrder": 1,
+    "tileColor": "blue"
+  },
+  "submitButton": {
+    "text": "Submit New Idea",
+    "url": "www.bcu.org"
   }
 }

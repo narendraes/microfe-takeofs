@@ -51,6 +51,11 @@
   },
   "displaySettings": {
     "showOnHomePage": true,
-    "displayOrder": 99
+    "displayOrder": 99,
+    "tileColor": "blue"
+  },
+  "submitButton": {
+    "text": "Submit New Idea",
+    "url": "www.google.com"
   }
 }
