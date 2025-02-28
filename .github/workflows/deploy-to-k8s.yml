@@ -1,0 +1,89 @@
+name: Build and Deploy to Kubernetes
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+  KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+  NAMESPACE: ${{ secrets.KUBE_NAMESPACE || 'default' }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Set Image Tag
+        id: set-tag
+        run: |
+          echo "IMAGE_TAG=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+      
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/microfe-takeofs:${{ env.IMAGE_TAG }},${{ env.DOCKER_REGISTRY }}/microfe-takeofs:latest
+          cache-from: type=registry,ref=${{ env.DOCKER_REGISTRY }}/microfe-takeofs:buildcache
+          cache-to: type=registry,ref=${{ env.DOCKER_REGISTRY }}/microfe-takeofs:buildcache,mode=max
+      
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+      
+      - name: Set up Kubernetes config
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ env.KUBE_CONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+      
+      - name: Create k8s directory
+        run: mkdir -p k8s-processed
+      
+      - name: Process Kubernetes manifests
+        run: |
+          for file in k8s/*.yaml; do
+            basename=$(basename "$file")
+            sed -e "s|\${DOCKER_REGISTRY}|${{ env.DOCKER_REGISTRY }}|g" \
+                -e "s|\${IMAGE_TAG}|${{ env.IMAGE_TAG }}|g" \
+                -e "s|\${DOMAIN_NAME}|${{ env.DOMAIN_NAME }}|g" \
+                -e "s|\${BASE64_ENCODED_API_KEY}|${{ secrets.PRODUCTION_API_KEY_BASE64 }}|g" \
+                "$file" > "k8s-processed/$basename"
+          done
+      
+      - name: Deploy to Kubernetes
+        run: |
+          # Apply ConfigMap and Secret first
+          if [ -f "k8s-processed/configmap.yaml" ]; then
+            kubectl apply -f "k8s-processed/configmap.yaml" -n "${{ env.NAMESPACE }}"
+          fi
+          
+          if [ -f "k8s-processed/secret.yaml" ]; then
+            kubectl apply -f "k8s-processed/secret.yaml" -n "${{ env.NAMESPACE }}"
+          fi
+          
+          # Apply Deployment and Service
+          if [ -f "k8s-processed/deployment.yaml" ]; then
+            kubectl apply -f "k8s-processed/deployment.yaml" -n "${{ env.NAMESPACE }}"
+          fi
+      
+      - name: Verify deployment
+        run: |
+          kubectl rollout status deployment/microfe-takeofs -n "${{ env.NAMESPACE }}" --timeout=180s
+          echo "Deployment completed successfully!"
+          echo "Application should be available at: https://${{ env.DOMAIN_NAME }}" 

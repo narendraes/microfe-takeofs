@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microfe-takeofs-config
+data:
+  PRODUCTION_API_URL: "https://your-production-api.com/api/categories"
+  # Add other non-sensitive environment variables here 
