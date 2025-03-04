@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { ProductSection, GuidelinesSection, ContactInfo } from "@/src/components/product-section"
 import { useEffect, useState } from "react"
 import { ProductContent } from "@/app/config/product-content-types"
+import Link from "next/link"
 
 export default function TicketPage({ params }: { params: { category: string } }) {
   const [content, setContent] = useState<ProductContent | null>(null);
@@ -101,6 +102,15 @@ export default function TicketPage({ params }: { params: { category: string } })
           >
             {content.submitButton?.text || 'Submit New Idea'}
           </a>
+          
+          <div className="mt-2 text-center">
+            <Link 
+              href="/of-jira-access" 
+              className="text-sm text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+            >
+              Need access? Visit Idea Contributor Access
+            </Link>
+          </div>
         </div>
       </div>
     </div>
