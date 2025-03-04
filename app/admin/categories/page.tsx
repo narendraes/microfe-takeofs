@@ -15,6 +15,11 @@ export default function CategoryAdminPage() {
   const [saveErrors, setSaveErrors] = useState<Record<string, string>>({})
   const [saveSuccess, setSaveSuccess] = useState<Record<string, boolean>>({})
   const [orderConflicts, setOrderConflicts] = useState<Record<string, boolean>>({})
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null)
+  const [confirmCategoryName, setConfirmCategoryName] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   useEffect(() => {
     // Fetch categories from the API
@@ -222,6 +227,60 @@ export default function CategoryAdminPage() {
     }
   }
 
+  // Handle opening delete modal
+  const openDeleteModal = (categoryId: string) => {
+    setCategoryToDelete(categoryId)
+    setConfirmCategoryName('')
+    setDeleteError(null)
+    setDeleteModalOpen(true)
+  }
+
+  // Handle closing delete modal
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false)
+    setCategoryToDelete(null)
+    setConfirmCategoryName('')
+    setDeleteError(null)
+  }
+
+  // Handle delete category
+  const handleDeleteCategory = async () => {
+    if (!categoryToDelete) return
+    
+    try {
+      setIsDeleting(true)
+      setDeleteError(null)
+      
+      // Call API to delete/archive the category
+      const response = await fetch(`/api/categories/${categoryToDelete}`, {
+        method: 'DELETE',
+      })
+      
+      if (!response.ok) {
+        throw new Error(`Failed to delete category: ${response.statusText}`)
+      }
+      
+      // Remove the category from local state
+      setCategories(categories.filter(id => id !== categoryToDelete))
+      
+      // Close the modal
+      closeDeleteModal()
+      
+      // Show success message
+      setSaveSuccess({ ...saveSuccess, [categoryToDelete]: true })
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setSaveSuccess((prev) => ({ ...prev, [categoryToDelete]: false }))
+      }, 3000)
+    } catch (err) {
+      console.error(`Error deleting category ${categoryToDelete}:`, err)
+      setDeleteError('Failed to delete category. Please try again.')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   // Component for displaying a category row
   const CategoryRow = ({ categoryId }: { categoryId: string }) => {
     const category = categoryDetails[categoryId]
@@ -311,13 +370,20 @@ export default function CategoryAdminPage() {
             <span className="text-red-600 dark:text-red-400">{saveErrors[categoryId]}</span>
           )}
         </td>
-        <td className="py-4 px-6">
+        <td className="py-4 px-6 flex space-x-2">
           <Link
             href={`/admin/categories/${categoryId}?admin=true`}
             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
           >
             View/Edit
           </Link>
+          <button
+            onClick={() => openDeleteModal(categoryId)}
+            className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
+            title="Delete category"
+          >
+            Delete
+          </button>
         </td>
       </tr>
     )
@@ -416,6 +482,57 @@ export default function CategoryAdminPage() {
           <li>You can also edit the JSON files directly if you prefer</li>
         </ul>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Delete Category</h2>
+            
+            <p className="mb-4 text-gray-700 dark:text-gray-300">
+              Are you sure you want to delete the category "{categoryToDelete && categoryDetails[categoryToDelete]?.title}"? 
+              This action will archive the category content and cannot be easily undone.
+            </p>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Type the category name to confirm:
+              </label>
+              <input
+                type="text"
+                value={confirmCategoryName}
+                onChange={(e) => setConfirmCategoryName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                placeholder="Enter category name"
+                disabled={isDeleting}
+              />
+            </div>
+            
+            {deleteError && (
+              <div className="mb-4 text-red-600 dark:text-red-400">
+                {deleteError}
+              </div>
+            )}
+            
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={closeDeleteModal}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteCategory}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isDeleting || confirmCategoryName !== (categoryToDelete && categoryDetails[categoryToDelete]?.title)}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Category'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 } 
