@@ -50,7 +50,7 @@
     "email": "michael.chen@company.com"
   },
   "displaySettings": {
-    "showOnHomePage": false,
+    "showOnHomePage": true,
     "displayOrder": 12,
     "tileColor": "blue"
   }

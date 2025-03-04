@@ -216,41 +216,27 @@ export default function NewCategoryPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Home Page Display Settings</h2>
           <div className="space-y-4">
-            <div className="flex items-center">
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={showOnHomePage}
-                  onChange={() => setShowOnHomePage(!showOnHomePage)}
-                />
-                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Show on Home Page
-                </span>
-              </label>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Display Order
+            <div className="mt-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Display Settings</h3>
+              <div className="mt-2">
+                <label className="inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={showOnHomePage}
+                    onChange={() => setShowOnHomePage(!showOnHomePage)}
+                  />
+                  <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                  <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Show on Home Page
+                  </span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="999"
-                  value={displayOrder}
-                  onChange={(e) => setDisplayOrder(parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                  disabled={!showOnHomePage}
-                />
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Lower numbers appear first on the home page.
+                  Display order can be managed from the <Link href="/admin/categories" className="text-blue-500 hover:underline">categories admin page</Link> after creation.
                 </p>
               </div>
               
-              <div>
+              <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Tile Color
                 </label>
@@ -269,6 +255,9 @@ export default function NewCategoryPage() {
                   <option value="indigo">Indigo</option>
                   <option value="teal">Teal</option>
                 </select>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Select a color for the category tile on the home page.
+                </p>
               </div>
             </div>
           </div>
