@@ -13,6 +13,7 @@ export type TileColor =
 
 export interface TileData {
   title: string
+  description?: string
   href: string
   disabled?: boolean
   openInNewTab?: boolean
@@ -30,8 +31,15 @@ const colorVariants: Record<TileColor, string> = {
   teal: "bg-teal-500 hover:bg-teal-600"
 }
 
+// Helper function to truncate text with ellipsis
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + '...';
+};
+
 export function Tile({ 
   title, 
+  description,
   href, 
   disabled = false, 
   openInNewTab = false,
@@ -40,11 +48,21 @@ export function Tile({
   const content = (
     <div
       className={cn(
-        "block p-6 rounded-lg text-center transition-colors text-white",
+        "block p-6 rounded-lg text-center transition-colors text-white h-32 flex flex-col justify-center",
         disabled ? "bg-gray-300 cursor-not-allowed" : colorVariants[color]
       )}
+      title={title} // Show full title on hover
     >
-      <h2 className="text-xl font-semibold">{title}</h2>
+      <h2 className="text-xl font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap">{title}</h2>
+      {description && (
+        <p className="text-sm overflow-hidden" style={{ 
+          display: '-webkit-box', 
+          WebkitLineClamp: 2, 
+          WebkitBoxOrient: 'vertical' 
+        }}>
+          {description}
+        </p>
+      )}
     </div>
   )
 
@@ -57,6 +75,7 @@ export function Tile({
       href={href}
       target={openInNewTab ? "_blank" : "_self"}
       rel={openInNewTab ? "noopener noreferrer" : undefined}
+      className="h-full"
     >
       {content}
     </Link>

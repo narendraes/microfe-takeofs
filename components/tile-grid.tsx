@@ -53,7 +53,7 @@ export function TileGrid() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {defaultTiles.slice(0, 8).map((tile, index) => (
-          <div key={index} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-lg"></div>
+          <div key={index} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg"></div>
         ))}
       </div>
     )
@@ -68,7 +68,9 @@ export function TileGrid() {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {tiles.map((tile) => (
-          <Tile key={tile.title} {...tile} />
+          <div key={tile.title} className="h-full">
+            <Tile {...tile} />
+          </div>
         ))}
       </div>
     </>

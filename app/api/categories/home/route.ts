@@ -10,6 +10,7 @@ export async function GET() {
     const formattedCategories = homePageCategories.map(({ id, content }) => ({
       id,
       title: content.title,
+      description: content.description,
       href: `/tickets/${id}`,
       color: content.displaySettings?.tileColor || 'blue',
       disabled: false,
