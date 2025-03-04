@@ -3,82 +3,22 @@
 import { useState, useEffect } from 'react'
 import { Tile, type TileData } from "./tile"
 
-// Default tiles as fallback
-const defaultTiles: TileData[] = [
-  { 
-    title: "Banking Products", 
-    description: "Submit ideas and feature requests for our banking solutions.",
-    href: "/tickets/bank", 
-    color: "blue", 
-    openInNewTab: false 
-  },
-  { 
-    title: "Directed Pay", 
-    description: "Submit ideas for directed payment processing solutions.",
-    href: "/tickets/directed-pay", 
-    color: "green", 
-    openInNewTab: false 
-  },
-  { 
-    title: "SSO & API Services", 
-    description: "Submit enhancement requests for SSO and API infrastructure.",
-    href: "/tickets/sso-api", 
-    color: "purple", 
-    openInNewTab: false 
-  },
-  { 
-    title: "Commercial Pay", 
-    description: "Submit ideas for commercial payment solutions.",
-    href: "/tickets/commercial-pay", 
-    color: "indigo", 
-    openInNewTab: false 
-  },
-  { 
-    title: "Commercial Payment Product Area", 
-    description: "Submit ideas for commercial payment product development.",
-    href: "/tickets/commercial-provider", 
-    color: "teal", 
-    openInNewTab: false 
-  },
-  { 
-    title: "Data Engineering", 
-    description: "Submit ideas for data infrastructure and analytics solutions.",
-    href: "/tickets/data-engineering", 
-    color: "yellow", 
-    openInNewTab: false 
-  },
-  { 
-    title: "HBA", 
-    description: "Submit ideas for HBA solutions and features.",
-    href: "/tickets/hba", 
-    color: "blue", 
-    openInNewTab: false 
-  },
-  { 
-    title: "CAMS & RRA", 
-    description: "Submit ideas for CAMS and RRA solutions.",
-    href: "/tickets/cams-rra", 
-    color: "purple", 
-    openInNewTab: false 
-  },
-  { 
-    title: "Mobile Applications", 
-    description: "Submit ideas for mobile application features and improvements.",
-    href: "/tickets/tools", 
-    color: "teal", 
-    openInNewTab: false 
-  },
-  { 
-    title: "Phoenix Team", 
-    description: "Submit ideas for system modernization and transformation initiatives.",
-    href: "/tickets/phoenix-team", 
-    color: "red", 
-    openInNewTab: false 
-  },
+// Default tiles as fallback (only hrefs, other data will be fetched)
+const defaultCategories = [
+  "bank",
+  "directed-pay",
+  "sso-api",
+  "commercial-pay",
+  "commercial-provider",
+  "data-engineering",
+  "hba",
+  "cams-rra",
+  "tools",
+  "phoenix-team"
 ]
 
 export function TileGrid() {
-  const [tiles, setTiles] = useState<TileData[]>(defaultTiles)
+  const [tiles, setTiles] = useState<TileData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -96,11 +36,22 @@ export function TileGrid() {
         
         if (Array.isArray(data) && data.length > 0) {
           setTiles(data)
+        } else {
+          // If no data from API, create tiles from default categories
+          const defaultTiles = defaultCategories.map(category => ({
+            href: `/tickets/${category}`
+          }))
+          setTiles(defaultTiles)
         }
       } catch (err) {
         console.error('Error loading home page categories:', err)
         setError('Failed to load categories. Using default categories instead.')
-        // Keep using default tiles
+        
+        // Create tiles from default categories
+        const defaultTiles = defaultCategories.map(category => ({
+          href: `/tickets/${category}`
+        }))
+        setTiles(defaultTiles)
       } finally {
         setLoading(false)
       }
@@ -112,7 +63,7 @@ export function TileGrid() {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {defaultTiles.slice(0, 8).map((tile, index) => (
+        {defaultCategories.slice(0, 8).map((_, index) => (
           <div key={index} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-lg"></div>
         ))}
       </div>
@@ -127,8 +78,8 @@ export function TileGrid() {
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {tiles.map((tile) => (
-          <Tile key={tile.title} {...tile} />
+        {tiles.map((tile, index) => (
+          <Tile key={index} {...tile} />
         ))}
       </div>
     </>
