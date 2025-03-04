@@ -31,12 +31,6 @@ const colorVariants: Record<TileColor, string> = {
   teal: "bg-teal-500 hover:bg-teal-600"
 }
 
-// Helper function to truncate text with ellipsis
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + '...';
-};
-
 export function Tile({ 
   title, 
   description,
@@ -48,20 +42,19 @@ export function Tile({
   const content = (
     <div
       className={cn(
-        "block p-6 rounded-lg text-center transition-colors text-white h-32 flex flex-col justify-center",
+        "block p-6 rounded-lg text-center transition-colors text-white relative group",
         disabled ? "bg-gray-300 cursor-not-allowed" : colorVariants[color]
       )}
-      title={title} // Show full title on hover
     >
-      <h2 className="text-xl font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap">{title}</h2>
+      <h2 className="text-xl font-semibold truncate">{title}</h2>
+      
+      {/* Popup tooltip that appears on hover */}
       {description && (
-        <p className="text-sm overflow-hidden" style={{ 
-          display: '-webkit-box', 
-          WebkitLineClamp: 2, 
-          WebkitBoxOrient: 'vertical' 
-        }}>
-          {description}
-        </p>
+        <div className="invisible group-hover:visible absolute z-50 w-64 p-4 bg-white text-gray-800 dark:bg-gray-800 dark:text-white rounded-lg shadow-lg transition-all duration-200 bottom-full left-1/2 -translate-x-1/2 mb-2">
+          <h3 className="text-lg font-semibold mb-2">{title}</h3>
+          <p className="text-sm">{description}</p>
+          <div className="absolute w-3 h-3 bg-white dark:bg-gray-800 transform rotate-45 top-full left-1/2 -translate-x-1/2 -mt-1.5"></div>
+        </div>
       )}
     </div>
   )
@@ -75,7 +68,6 @@ export function Tile({
       href={href}
       target={openInNewTab ? "_blank" : "_self"}
       rel={openInNewTab ? "noopener noreferrer" : undefined}
-      className="h-full"
     >
       {content}
     </Link>

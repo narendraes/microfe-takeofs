@@ -5,16 +5,76 @@ import { Tile, type TileData } from "./tile"
 
 // Default tiles as fallback
 const defaultTiles: TileData[] = [
-  { title: "Bank", href: "/tickets/bank", color: "blue", openInNewTab: false },
-  { title: "Directed Pay", href: "/tickets/directed-pay", color: "green", openInNewTab: false },
-  { title: "SSO/API", href: "/tickets/sso-api", color: "purple", openInNewTab: false },
-  { title: "Commercial Pay", href: "/tickets/commercial-pay", color: "indigo", openInNewTab: false },
-  { title: "Commercial Provider", href: "/tickets/commercial-provider", color: "teal", openInNewTab: false },
-  { title: "Data Engineering", href: "/tickets/data-engineering", color: "yellow", openInNewTab: false },
-  { title: "HBA", href: "/tickets/hba", color: "blue", openInNewTab: false },
-  { title: "CAMS/RRA", href: "/tickets/cams-rra", color: "purple", openInNewTab: false },
-  { title: "Tools", href: "/tickets/tools", color: "teal", openInNewTab: false },
-  { title: "Phoenix Team", href: "/tickets/phoenix-team", color: "red", openInNewTab: false },
+  { 
+    title: "Banking Products", 
+    description: "Submit ideas and feature requests for our banking solutions.",
+    href: "/tickets/bank", 
+    color: "blue", 
+    openInNewTab: false 
+  },
+  { 
+    title: "Directed Pay", 
+    description: "Submit ideas for directed payment processing solutions.",
+    href: "/tickets/directed-pay", 
+    color: "green", 
+    openInNewTab: false 
+  },
+  { 
+    title: "SSO & API Services", 
+    description: "Submit enhancement requests for SSO and API infrastructure.",
+    href: "/tickets/sso-api", 
+    color: "purple", 
+    openInNewTab: false 
+  },
+  { 
+    title: "Commercial Pay", 
+    description: "Submit ideas for commercial payment solutions.",
+    href: "/tickets/commercial-pay", 
+    color: "indigo", 
+    openInNewTab: false 
+  },
+  { 
+    title: "Commercial Payment Product Area", 
+    description: "Submit ideas for commercial payment product development.",
+    href: "/tickets/commercial-provider", 
+    color: "teal", 
+    openInNewTab: false 
+  },
+  { 
+    title: "Data Engineering", 
+    description: "Submit ideas for data infrastructure and analytics solutions.",
+    href: "/tickets/data-engineering", 
+    color: "yellow", 
+    openInNewTab: false 
+  },
+  { 
+    title: "HBA", 
+    description: "Submit ideas for HBA solutions and features.",
+    href: "/tickets/hba", 
+    color: "blue", 
+    openInNewTab: false 
+  },
+  { 
+    title: "CAMS & RRA", 
+    description: "Submit ideas for CAMS and RRA solutions.",
+    href: "/tickets/cams-rra", 
+    color: "purple", 
+    openInNewTab: false 
+  },
+  { 
+    title: "Mobile Applications", 
+    description: "Submit ideas for mobile application features and improvements.",
+    href: "/tickets/tools", 
+    color: "teal", 
+    openInNewTab: false 
+  },
+  { 
+    title: "Phoenix Team", 
+    description: "Submit ideas for system modernization and transformation initiatives.",
+    href: "/tickets/phoenix-team", 
+    color: "red", 
+    openInNewTab: false 
+  },
 ]
 
 export function TileGrid() {
@@ -53,7 +113,7 @@ export function TileGrid() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {defaultTiles.slice(0, 8).map((tile, index) => (
-          <div key={index} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg"></div>
+          <div key={index} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-lg"></div>
         ))}
       </div>
     )
@@ -68,9 +128,7 @@ export function TileGrid() {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {tiles.map((tile) => (
-          <div key={tile.title} className="h-full">
-            <Tile {...tile} />
-          </div>
+          <Tile key={tile.title} {...tile} />
         ))}
       </div>
     </>
