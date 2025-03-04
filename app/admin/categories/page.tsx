@@ -9,15 +9,12 @@ export default function CategoryAdminPage() {
   const [categoryDetails, setCategoryDetails] = useState<Record<string, ProductContent>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [homePageOrder, setHomePageOrder] = useState<Record<string, number>>({})
+  const [mainOrders, setMainOrders] = useState<Record<string, number>>({})
+  const [subOrders, setSubOrders] = useState<Record<string, number>>({})
   const [savingSettings, setSavingSettings] = useState<Record<string, boolean>>({})
   const [saveErrors, setSaveErrors] = useState<Record<string, string>>({})
   const [saveSuccess, setSaveSuccess] = useState<Record<string, boolean>>({})
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null)
-  const [confirmDeleteText, setConfirmDeleteText] = useState('')
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [orderConflicts, setOrderConflicts] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     // Fetch categories from the API
@@ -45,12 +42,28 @@ export default function CategoryAdminPage() {
         
         setCategoryDetails(details)
         
-        // Initialize home page order
-        const orderMap: Record<string, number> = {}
+        // Initialize order values
+        const mainOrderMap: Record<string, number> = {}
+        const subOrderMap: Record<string, number> = {}
+        
         Object.entries(details).forEach(([id, content]) => {
-          orderMap[id] = content.displaySettings?.displayOrder || 999
+          const displayOrder = content.displaySettings?.displayOrder || 999
+          
+          // Convert existing display order to main/sub format
+          // Main order is the integer part (1-9)
+          // Sub order is the decimal part converted to 1-9 range
+          const mainOrder = Math.min(9, Math.max(1, Math.floor(displayOrder / 10) || 9))
+          const subOrder = Math.min(9, Math.max(1, displayOrder % 10 || 9))
+          
+          mainOrderMap[id] = mainOrder
+          subOrderMap[id] = subOrder
         })
-        setHomePageOrder(orderMap)
+        
+        setMainOrders(mainOrderMap)
+        setSubOrders(subOrderMap)
+        
+        // Check for conflicts
+        checkOrderConflicts(mainOrderMap, subOrderMap)
       } catch (err) {
         console.error('Error loading categories:', err)
         setError('Failed to load categories. Please try again.')
@@ -61,6 +74,27 @@ export default function CategoryAdminPage() {
 
     fetchCategories()
   }, [])
+
+  // Check for order conflicts (duplicate combinations)
+  const checkOrderConflicts = (mainOrderMap: Record<string, number>, subOrderMap: Record<string, number>) => {
+    const conflicts: Record<string, boolean> = {}
+    const usedCombinations: Record<string, string> = {}
+    
+    Object.entries(mainOrderMap).forEach(([categoryId, mainOrder]) => {
+      const subOrder = subOrderMap[categoryId]
+      const combination = `${mainOrder}-${subOrder}`
+      
+      if (usedCombinations[combination]) {
+        // Mark both categories as having conflicts
+        conflicts[categoryId] = true
+        conflicts[usedCombinations[combination]] = true
+      } else {
+        usedCombinations[combination] = categoryId
+      }
+    })
+    
+    setOrderConflicts(conflicts)
+  }
 
   // Handle toggling display on home page
   const handleToggleHomePageDisplay = async (categoryId: string) => {
@@ -76,25 +110,60 @@ export default function CategoryAdminPage() {
     await updateDisplaySettings(categoryId, newSettings)
   }
 
-  // Handle changing display order
-  const handleOrderChange = async (categoryId: string, order: number) => {
-    // Update local state first for immediate UI feedback
-    setHomePageOrder({
-      ...homePageOrder,
+  // Handle changing main order
+  const handleMainOrderChange = async (categoryId: string, order: number) => {
+    // Update local state
+    const newMainOrders = {
+      ...mainOrders,
       [categoryId]: order
-    })
+    }
     
-    // Then save to the server
+    setMainOrders(newMainOrders)
+    
+    // Check for conflicts
+    checkOrderConflicts(newMainOrders, subOrders)
+    
+    // Save the combined order to the server
+    await saveOrderToServer(categoryId, newMainOrders[categoryId], subOrders[categoryId])
+  }
+  
+  // Handle changing sub order
+  const handleSubOrderChange = async (categoryId: string, order: number) => {
+    // Update local state
+    const newSubOrders = {
+      ...subOrders,
+      [categoryId]: order
+    }
+    
+    setSubOrders(newSubOrders)
+    
+    // Check for conflicts
+    checkOrderConflicts(mainOrders, newSubOrders)
+    
+    // Save the combined order to the server
+    await saveOrderToServer(categoryId, mainOrders[categoryId], newSubOrders[categoryId])
+  }
+  
+  // Save the combined order to the server
+  const saveOrderToServer = async (categoryId: string, mainOrder: number, subOrder: number) => {
+    // Calculate the combined display order
+    // Format: main order * 10 + sub order (e.g., 3-5 becomes 35)
+    const displayOrder = (mainOrder * 10) + subOrder
+    
     const category = categoryDetails[categoryId]
     if (!category) return
     
     const currentSettings = category.displaySettings || { showOnHomePage: false, displayOrder: 999 }
-    const newSettings = {
-      ...currentSettings,
-      displayOrder: order
-    }
     
-    await updateDisplaySettings(categoryId, newSettings)
+    // Only save if the value has actually changed
+    if (currentSettings.displayOrder !== displayOrder) {
+      const newSettings = {
+        ...currentSettings,
+        displayOrder: displayOrder
+      }
+      
+      await updateDisplaySettings(categoryId, newSettings)
+    }
   }
 
   // Handle changing tile color
@@ -153,66 +222,13 @@ export default function CategoryAdminPage() {
     }
   }
 
-  // Handle opening delete modal
-  const openDeleteModal = (categoryId: string) => {
-    setCategoryToDelete(categoryId)
-    setConfirmDeleteText('')
-    setDeleteError(null)
-    setDeleteModalOpen(true)
-  }
-
-  // Handle closing delete modal
-  const closeDeleteModal = () => {
-    setDeleteModalOpen(false)
-    setCategoryToDelete(null)
-    setConfirmDeleteText('')
-    setDeleteError(null)
-  }
-
-  // Handle delete category
-  const handleDeleteCategory = async () => {
-    if (!categoryToDelete) return
-    
-    const category = categoryDetails[categoryToDelete]
-    if (!category) return
-    
-    // Check if confirmation text matches category title
-    if (confirmDeleteText !== category.title) {
-      setDeleteError('Category name does not match. Please try again.')
-      return
-    }
-    
-    setIsDeleting(true)
-    setDeleteError(null)
-    
-    try {
-      const response = await fetch(`/api/categories/${categoryToDelete}`, {
-        method: 'DELETE',
-      })
-      
-      if (!response.ok) {
-        throw new Error(`Failed to delete category: ${response.statusText}`)
-      }
-      
-      // Remove category from state
-      setCategories(categories.filter(id => id !== categoryToDelete))
-      
-      // Close modal
-      closeDeleteModal()
-    } catch (err) {
-      console.error(`Error deleting category ${categoryToDelete}:`, err)
-      setDeleteError('Failed to delete category. Please try again.')
-    } finally {
-      setIsDeleting(false)
-    }
-  }
-
   // Component for displaying a category row
   const CategoryRow = ({ categoryId }: { categoryId: string }) => {
     const category = categoryDetails[categoryId]
     if (!category) return null
     
     const displaySettings = category.displaySettings || { showOnHomePage: false, displayOrder: 999, tileColor: 'blue' }
+    const hasConflict = orderConflicts[categoryId]
     
     return (
       <tr className="border-b dark:border-gray-700">
@@ -232,30 +248,42 @@ export default function CategoryAdminPage() {
           </div>
         </td>
         <td className="py-4 px-6">
-          <div className="flex flex-col space-y-2 w-48">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Priority:</span>
-              <span className="text-sm font-medium ml-2">
-                {homePageOrder[categoryId] <= 10 ? 'High' : 
-                 homePageOrder[categoryId] <= 50 ? 'Medium' : 'Low'}
-                ({homePageOrder[categoryId] || displaySettings.displayOrder || 999})
+          <div className="flex items-center space-x-2">
+            <div className={`flex space-x-2 ${hasConflict ? 'border border-red-500 p-1 rounded' : ''}`}>
+              <select
+                value={mainOrders[categoryId] || 9}
+                onChange={(e) => handleMainOrderChange(categoryId, parseInt(e.target.value))}
+                className="w-16 px-2 py-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
+                title="Main display order (1-9)"
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+              <span className="text-gray-500 dark:text-gray-400 self-center">-</span>
+              <select
+                value={subOrders[categoryId] || 9}
+                onChange={(e) => handleSubOrderChange(categoryId, parseInt(e.target.value))}
+                className="w-16 px-2 py-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
+                title="Sub-order (1-9)"
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+            </div>
+            {hasConflict && (
+              <span className="text-xs text-red-500 dark:text-red-400">
+                Duplicate order
               </span>
-            </div>
-            <input
-              type="range"
-              min="1"
-              max="100"
-              step="1"
-              value={homePageOrder[categoryId] || displaySettings.displayOrder || 999}
-              onChange={(e) => handleOrderChange(categoryId, parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-              disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
-            />
-            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-              <span>High</span>
-              <span>Medium</span>
-              <span>Low</span>
-            </div>
+            )}
+            {savingSettings[categoryId] && (
+              <span className="text-xs text-gray-500 dark:text-gray-400 animate-pulse">
+                Saving...
+              </span>
+            )}
           </div>
         </td>
         <td className="py-4 px-6">
@@ -283,19 +311,13 @@ export default function CategoryAdminPage() {
             <span className="text-red-600 dark:text-red-400">{saveErrors[categoryId]}</span>
           )}
         </td>
-        <td className="py-4 px-6 flex space-x-3">
+        <td className="py-4 px-6">
           <Link
             href={`/admin/categories/${categoryId}?admin=true`}
             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
           >
             View/Edit
           </Link>
-          <button
-            onClick={() => openDeleteModal(categoryId)}
-            className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
-          >
-            Delete
-          </button>
         </td>
       </tr>
     )
@@ -335,7 +357,9 @@ export default function CategoryAdminPage() {
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold dark:text-gray-200">Home Page Display Settings</h2>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Configure which categories appear on the home page and their display order. Categories are sorted by display order (lowest first).
+            Configure which categories appear on the home page and their display order. 
+            Set the display order using the two dropdowns (main order - sub order). 
+            Categories are sorted by these values, and each combination must be unique.
           </p>
         </div>
 
@@ -361,12 +385,19 @@ export default function CategoryAdminPage() {
             <tbody>
               {categories
                 .sort((a, b) => {
-                  // Get display order for both categories
-                  const orderA = categoryDetails[a]?.displaySettings?.displayOrder || 999;
-                  const orderB = categoryDetails[b]?.displaySettings?.displayOrder || 999;
+                  // Get main and sub orders for both categories
+                  const mainOrderA = mainOrders[a] || 9;
+                  const subOrderA = subOrders[a] || 9;
+                  const mainOrderB = mainOrders[b] || 9;
+                  const subOrderB = subOrders[b] || 9;
                   
-                  // Sort by display order (ascending)
-                  return orderA - orderB;
+                  // First sort by main order
+                  if (mainOrderA !== mainOrderB) {
+                    return mainOrderA - mainOrderB;
+                  }
+                  
+                  // If main orders are the same, sort by sub order
+                  return subOrderA - subOrderB;
                 })
                 .map((categoryId) => (
                   <CategoryRow key={categoryId} categoryId={categoryId} />
@@ -385,52 +416,6 @@ export default function CategoryAdminPage() {
           <li>You can also edit the JSON files directly if you prefer</li>
         </ul>
       </div>
-
-      {/* Delete Confirmation Modal */}
-      {deleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Delete Category</h3>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Are you sure you want to delete the category <span className="font-bold">{categoryToDelete && categoryDetails[categoryToDelete]?.title}</span>? This action cannot be undone.
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              To confirm, please type the category name below:
-            </p>
-            <input
-              type="text"
-              value={confirmDeleteText}
-              onChange={(e) => setConfirmDeleteText(e.target.value)}
-              placeholder="Type category name here"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-gray-100 mb-4"
-            />
-            {deleteError && (
-              <div className="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded mb-4">
-                <p>{deleteError}</p>
-              </div>
-            )}
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={closeDeleteModal}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteCategory}
-                disabled={isDeleting || confirmDeleteText !== (categoryToDelete && categoryDetails[categoryToDelete]?.title)}
-                className={`px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                  isDeleting || confirmDeleteText !== (categoryToDelete && categoryDetails[categoryToDelete]?.title)
-                    ? 'opacity-50 cursor-not-allowed'
-                    : ''
-                }`}
-              >
-                {isDeleting ? 'Deleting...' : 'Delete Category'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 } 
