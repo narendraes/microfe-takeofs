@@ -1,5 +1,5 @@
 {
-  "title": "Commercial Provider",
+  "title": "Commercial Payment Product Area",
   "description": "Submit ideas for commercial provider integration and management solutions.",
   "sections": [
     {
@@ -53,5 +53,9 @@
     "showOnHomePage": true,
     "displayOrder": 22,
     "tileColor": "teal"
+  },
+  "submitButton": {
+    "text": "Submit New Idea",
+    "url": ""
   }
 }
