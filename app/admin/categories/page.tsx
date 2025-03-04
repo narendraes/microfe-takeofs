@@ -256,7 +256,7 @@ export default function CategoryAdminPage() {
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold dark:text-gray-200">Home Page Display Settings</h2>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Configure which categories appear on the home page and their display order.
+            Configure which categories appear on the home page and their display order. Categories are sorted by display order (lowest first).
           </p>
         </div>
 
@@ -266,16 +266,32 @@ export default function CategoryAdminPage() {
               <tr>
                 <th className="py-3 px-6 font-medium">Category</th>
                 <th className="py-3 px-6 font-medium">Show on Home</th>
-                <th className="py-3 px-6 font-medium">Display Order</th>
+                <th className="py-3 px-6 font-medium">
+                  <div className="flex items-center">
+                    Display Order
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                    </svg>
+                  </div>
+                </th>
                 <th className="py-3 px-6 font-medium">Tile Color</th>
                 <th className="py-3 px-6 font-medium">Status</th>
                 <th className="py-3 px-6 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {categories.map((categoryId) => (
-                <CategoryRow key={categoryId} categoryId={categoryId} />
-              ))}
+              {categories
+                .sort((a, b) => {
+                  // Get display order for both categories
+                  const orderA = categoryDetails[a]?.displaySettings?.displayOrder || 999;
+                  const orderB = categoryDetails[b]?.displaySettings?.displayOrder || 999;
+                  
+                  // Sort by display order (ascending)
+                  return orderA - orderB;
+                })
+                .map((categoryId) => (
+                  <CategoryRow key={categoryId} categoryId={categoryId} />
+                ))}
             </tbody>
           </table>
         </div>
