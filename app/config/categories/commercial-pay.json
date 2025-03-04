@@ -51,8 +51,8 @@
   },
   "displaySettings": {
     "showOnHomePage": true,
-    "displayOrder": 99,
-    "tileColor": "blue"
+    "displayOrder": 21,
+    "tileColor": "teal"
   },
   "submitButton": {
     "text": "Submit New Idea",
