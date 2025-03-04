@@ -13,6 +13,11 @@ export default function CategoryAdminPage() {
   const [savingSettings, setSavingSettings] = useState<Record<string, boolean>>({})
   const [saveErrors, setSaveErrors] = useState<Record<string, string>>({})
   const [saveSuccess, setSaveSuccess] = useState<Record<string, boolean>>({})
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null)
+  const [confirmDeleteText, setConfirmDeleteText] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   useEffect(() => {
     // Fetch categories from the API
@@ -148,6 +153,60 @@ export default function CategoryAdminPage() {
     }
   }
 
+  // Handle opening delete modal
+  const openDeleteModal = (categoryId: string) => {
+    setCategoryToDelete(categoryId)
+    setConfirmDeleteText('')
+    setDeleteError(null)
+    setDeleteModalOpen(true)
+  }
+
+  // Handle closing delete modal
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false)
+    setCategoryToDelete(null)
+    setConfirmDeleteText('')
+    setDeleteError(null)
+  }
+
+  // Handle delete category
+  const handleDeleteCategory = async () => {
+    if (!categoryToDelete) return
+    
+    const category = categoryDetails[categoryToDelete]
+    if (!category) return
+    
+    // Check if confirmation text matches category title
+    if (confirmDeleteText !== category.title) {
+      setDeleteError('Category name does not match. Please try again.')
+      return
+    }
+    
+    setIsDeleting(true)
+    setDeleteError(null)
+    
+    try {
+      const response = await fetch(`/api/categories/${categoryToDelete}`, {
+        method: 'DELETE',
+      })
+      
+      if (!response.ok) {
+        throw new Error(`Failed to delete category: ${response.statusText}`)
+      }
+      
+      // Remove category from state
+      setCategories(categories.filter(id => id !== categoryToDelete))
+      
+      // Close modal
+      closeDeleteModal()
+    } catch (err) {
+      console.error(`Error deleting category ${categoryToDelete}:`, err)
+      setDeleteError('Failed to delete category. Please try again.')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   // Component for displaying a category row
   const CategoryRow = ({ categoryId }: { categoryId: string }) => {
     const category = categoryDetails[categoryId]
@@ -173,16 +232,30 @@ export default function CategoryAdminPage() {
           </div>
         </td>
         <td className="py-4 px-6">
-          <div className="flex items-center">
+          <div className="flex flex-col space-y-2 w-48">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Priority:</span>
+              <span className="text-sm font-medium ml-2">
+                {homePageOrder[categoryId] <= 10 ? 'High' : 
+                 homePageOrder[categoryId] <= 50 ? 'Medium' : 'Low'}
+                ({homePageOrder[categoryId] || displaySettings.displayOrder || 999})
+              </span>
+            </div>
             <input
-              type="number"
+              type="range"
               min="1"
-              max="999"
+              max="100"
+              step="1"
               value={homePageOrder[categoryId] || displaySettings.displayOrder || 999}
               onChange={(e) => handleOrderChange(categoryId, parseInt(e.target.value))}
-              className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
               disabled={!displaySettings.showOnHomePage || savingSettings[categoryId]}
             />
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+              <span>High</span>
+              <span>Medium</span>
+              <span>Low</span>
+            </div>
           </div>
         </td>
         <td className="py-4 px-6">
@@ -210,13 +283,19 @@ export default function CategoryAdminPage() {
             <span className="text-red-600 dark:text-red-400">{saveErrors[categoryId]}</span>
           )}
         </td>
-        <td className="py-4 px-6">
+        <td className="py-4 px-6 flex space-x-3">
           <Link
             href={`/admin/categories/${categoryId}?admin=true`}
             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
           >
             View/Edit
           </Link>
+          <button
+            onClick={() => openDeleteModal(categoryId)}
+            className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
+          >
+            Delete
+          </button>
         </td>
       </tr>
     )
@@ -306,6 +385,52 @@ export default function CategoryAdminPage() {
           <li>You can also edit the JSON files directly if you prefer</li>
         </ul>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Delete Category</h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
+              Are you sure you want to delete the category <span className="font-bold">{categoryToDelete && categoryDetails[categoryToDelete]?.title}</span>? This action cannot be undone.
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
+              To confirm, please type the category name below:
+            </p>
+            <input
+              type="text"
+              value={confirmDeleteText}
+              onChange={(e) => setConfirmDeleteText(e.target.value)}
+              placeholder="Type category name here"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-gray-100 mb-4"
+            />
+            {deleteError && (
+              <div className="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded mb-4">
+                <p>{deleteError}</p>
+              </div>
+            )}
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={closeDeleteModal}
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteCategory}
+                disabled={isDeleting || confirmDeleteText !== (categoryToDelete && categoryDetails[categoryToDelete]?.title)}
+                className={`px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                  isDeleting || confirmDeleteText !== (categoryToDelete && categoryDetails[categoryToDelete]?.title)
+                    ? 'opacity-50 cursor-not-allowed'
+                    : ''
+                }`}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Category'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 } 
