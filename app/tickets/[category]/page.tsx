@@ -105,7 +105,7 @@ export default function TicketPage({ params }: { params: { category: string } })
           
           <div className="mt-2 text-center">
             <Link 
-              href="/of-jira-access" 
+              href="/idea-contributor-access" 
               className="text-sm text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
             >
               Need access? Visit Idea Contributor Access
