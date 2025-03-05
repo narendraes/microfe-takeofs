@@ -4,10 +4,6 @@ export type ProductContent = {
   sections: {
     title: string
     content: string
-    subsections?: {
-      title: string
-      items: string[]
-    }[]
   }[]
   guidelines: {
     title: string
@@ -27,34 +23,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We provide core banking infrastructure and solutions that power financial services across the organization.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Core Banking Systems",
-              "Account Management",
-              "Transaction Processing",
-              "Financial Reporting",
-              "Regulatory Compliance"
-            ]
-          }
-        ]
+        content: "We provide core banking infrastructure and solutions that power financial services across the organization."
       },
       {
         title: "Current Priorities",
-        content: "Our team is focused on modernizing core banking infrastructure and improving system reliability.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "API Modernization",
-              "Real-time Processing",
-              "Cloud Migration",
-              "Security Enhancements"
-            ]
-          }
-        ]
+        content: "Our team is focused on modernizing core banking infrastructure and improving system reliability."
       }
     ],
     guidelines: {
@@ -79,34 +52,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We manage and optimize payment routing, processing, and reconciliation across multiple payment channels.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Payment Processing Infrastructure",
-              "Transaction Routing",
-              "Settlement Systems",
-              "Payment Reconciliation",
-              "Payment Gateway Integration"
-            ]
-          }
-        ]
+        content: "We manage and optimize payment routing, processing, and reconciliation across multiple payment channels."
       },
       {
         title: "Current Priorities",
-        content: "We're focusing on expanding our payment capabilities and improving processing efficiency.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Real-time Payment Processing",
-              "Cross-border Payment Solutions",
-              "Payment Security Enhancement",
-              "Integration with New Payment Methods"
-            ]
-          }
-        ]
+        content: "We're focusing on expanding our payment capabilities and improving processing efficiency."
       }
     ],
     guidelines: {
@@ -131,34 +81,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We provide secure authentication solutions and API management services across the organization.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Single Sign-On Solutions",
-              "API Gateway Management",
-              "Authentication Services",
-              "API Security",
-              "Developer Experience"
-            ]
-          }
-        ]
+        content: "We provide secure authentication solutions and API management services across the organization."
       },
       {
         title: "Current Priorities",
-        content: "Our focus is on enhancing API security and improving developer experience.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "OAuth 2.0 Implementation",
-              "API Documentation Automation",
-              "Rate Limiting Enhancement",
-              "API Analytics Dashboard"
-            ]
-          }
-        ]
+        content: "Our focus is on enhancing API security and improving developer experience."
       }
     ],
     guidelines: {
@@ -183,34 +110,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We develop and maintain commercial payment solutions for business customers.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Business Payment Processing",
-              "Commercial Cards",
-              "Expense Management",
-              "Vendor Payments",
-              "Payment Analytics"
-            ]
-          }
-        ]
+        content: "We develop and maintain commercial payment solutions for business customers."
       },
       {
         title: "Current Priorities",
-        content: "We're focusing on digital transformation of commercial payments.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Virtual Card Solutions",
-              "Automated Reconciliation",
-              "Integrated Expense Management",
-              "Real-time Payment Tracking"
-            ]
-          }
-        ]
+        content: "We're focusing on digital transformation of commercial payments."
       }
     ],
     guidelines: {
@@ -235,34 +139,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We build and maintain data infrastructure and analytics capabilities.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Data Pipeline Development",
-              "Data Warehouse Management",
-              "Real-time Analytics",
-              "Data Quality",
-              "Data Governance"
-            ]
-          }
-        ]
+        content: "We build and maintain data infrastructure and analytics capabilities."
       },
       {
         title: "Current Priorities",
-        content: "We're focusing on modernizing our data infrastructure and improving data accessibility.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Real-time Data Processing",
-              "Machine Learning Infrastructure",
-              "Data Lake Implementation",
-              "Self-service Analytics"
-            ]
-          }
-        ]
+        content: "We're focusing on modernizing our data infrastructure and improving data accessibility."
       }
     ],
     guidelines: {
@@ -287,34 +168,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We manage provider relationships and develop integration solutions for commercial services.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Provider Integration",
-              "Service Management",
-              "Provider Onboarding",
-              "Contract Management",
-              "Performance Monitoring"
-            ]
-          }
-        ]
+        content: "We manage provider relationships and develop integration solutions for commercial services."
       },
       {
         title: "Current Priorities",
-        content: "We're streamlining provider integration processes and enhancing monitoring capabilities.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Automated Provider Onboarding",
-              "Real-time Performance Tracking",
-              "Integration Framework Enhancement",
-              "Provider Analytics Platform"
-            ]
-          }
-        ]
+        content: "We're streamlining provider integration processes and enhancing monitoring capabilities."
       }
     ],
     guidelines: {
@@ -339,34 +197,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We develop and maintain systems for managing health benefits and claims processing.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Benefits Administration",
-              "Claims Processing",
-              "Member Management",
-              "Provider Networks",
-              "Compliance Management"
-            ]
-          }
-        ]
+        content: "We develop and maintain systems for managing health benefits and claims processing."
       },
       {
         title: "Current Priorities",
-        content: "We're focusing on modernizing benefits administration and improving member experience.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Digital Claims Processing",
-              "Member Portal Enhancement",
-              "Automated Eligibility Verification",
-              "Real-time Benefits Information"
-            ]
-          }
-        ]
+        content: "We're focusing on modernizing benefits administration and improving member experience."
       }
     ],
     guidelines: {
@@ -391,34 +226,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We provide compliance monitoring and risk assessment tools across the organization.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Compliance Monitoring",
-              "Risk Assessment",
-              "Audit Management",
-              "Regulatory Reporting",
-              "Policy Management"
-            ]
-          }
-        ]
+        content: "We provide compliance monitoring and risk assessment tools across the organization."
       },
       {
         title: "Current Priorities",
-        content: "We're enhancing our compliance monitoring capabilities and automating risk assessments.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Automated Risk Scoring",
-              "Real-time Compliance Monitoring",
-              "Integrated Policy Management",
-              "Enhanced Reporting Dashboard"
-            ]
-          }
-        ]
+        content: "We're enhancing our compliance monitoring capabilities and automating risk assessments."
       }
     ],
     guidelines: {
@@ -443,34 +255,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We develop and maintain tools that enhance developer productivity and code quality.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "Development Environments",
-              "CI/CD Pipeline",
-              "Code Quality Tools",
-              "Testing Frameworks",
-              "Developer Productivity"
-            ]
-          }
-        ]
+        content: "We develop and maintain tools that enhance developer productivity and code quality."
       },
       {
         title: "Current Priorities",
-        content: "We're focusing on automating development workflows and improving tool integration.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Automated Testing Framework",
-              "DevOps Pipeline Enhancement",
-              "Code Analysis Tools",
-              "Development Metrics Dashboard"
-            ]
-          }
-        ]
+        content: "We're focusing on automating development workflows and improving tool integration."
       }
     ],
     guidelines: {
@@ -495,34 +284,11 @@ export const productContent: Record<string, ProductContent> = {
     sections: [
       {
         title: "What We Do",
-        content: "We lead strategic transformation initiatives and system modernization efforts.",
-        subsections: [
-          {
-            title: "Key Focus Areas",
-            items: [
-              "System Modernization",
-              "Legacy Migration",
-              "Architecture Transformation",
-              "Technology Innovation",
-              "Digital Transformation"
-            ]
-          }
-        ]
+        content: "We lead strategic transformation initiatives and system modernization efforts."
       },
       {
         title: "Current Priorities",
-        content: "We're focusing on modernizing core systems and implementing innovative solutions.",
-        subsections: [
-          {
-            title: "2024 Initiatives",
-            items: [
-              "Cloud Migration",
-              "Microservices Architecture",
-              "API-First Strategy",
-              "Innovation Lab"
-            ]
-          }
-        ]
+        content: "We're focusing on modernizing core systems and implementing innovative solutions."
       }
     ],
     guidelines: {

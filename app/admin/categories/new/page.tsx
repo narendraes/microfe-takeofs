@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { RichTextEditor } from '@/components/rich-text-editor'
+import { ProductContent } from '@/app/config/product-content-types'
 
 export default function NewCategoryPage() {
   const router = useRouter()
@@ -18,17 +19,19 @@ export default function NewCategoryPage() {
   const [showSection2, setShowSection2] = useState(true)
   
   // Default category structure
-  const [category, setCategory] = useState({
+  const [category, setCategory] = useState<ProductContent>({
     title: '',
     description: '',
     sections: [
       {
         title: 'Section 1',
-        content: ''
+        content: '',
+        subsections: []
       },
       {
         title: 'Section 2',
-        content: ''
+        content: '',
+        subsections: []
       }
     ],
     guidelines: {
@@ -69,14 +72,14 @@ export default function NewCategoryPage() {
       
       // Ensure we have at least one section
       if (updatedSections.length === 0) {
-        updatedSections.push({ title: 'Section 1', content: '' })
+        updatedSections.push({ title: 'Section 1', content: '', subsections: [] })
       }
       
       // Handle section 2 visibility
       if (showSection2) {
         // Ensure we have a second section
         if (updatedSections.length < 2) {
-          updatedSections.push({ title: 'Section 2', content: '' })
+          updatedSections.push({ title: 'Section 2', content: '', subsections: [] })
         }
       } else {
         // Remove section 2 if it exists and showSection2 is false

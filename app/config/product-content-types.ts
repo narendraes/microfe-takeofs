@@ -8,10 +8,6 @@ export type ProductContent = {
   sections: {
     title: string;
     content: string;
-    subsections?: {
-      title: string;
-      items: string[];
-    }[];
   }[];
   guidelines: {
     title: string;
