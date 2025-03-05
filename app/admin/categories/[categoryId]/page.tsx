@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ProductContent } from '@/app/config/product-content-types'
 import { RichTextEditor } from '@/components/rich-text-editor'
+import { useParams } from 'next/navigation'
 
-export default function EditCategoryPage({ params }: { params: { categoryId: string } }) {
-  const { categoryId } = params;
+export default function EditCategoryPage() {
+  const params = useParams();
+  const categoryId = params.categoryId as string;
   const router = useRouter()
   const [category, setCategory] = useState<ProductContent | null>(null)
   const [loading, setLoading] = useState(true)

@@ -5,9 +5,13 @@ import { ProductSection, GuidelinesSection, ContactInfo } from "@/src/components
 import { useEffect, useState } from "react"
 import { ProductContent } from "@/app/config/product-content-types"
 import Link from "next/link"
+import { useParams } from "next/navigation"
 
-export default function TicketPage({ params }: { params: { category: string } }) {
-  const { category } = params;
+export default function TicketPage() {
+  // Use the useParams hook to get the category
+  const params = useParams();
+  const category = params.category as string;
+  
   const [content, setContent] = useState<ProductContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

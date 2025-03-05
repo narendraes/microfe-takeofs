@@ -4,9 +4,10 @@ import { ProductContent } from '@/app/config/product-content-types';
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
-  const { slug } = params;
+  const { params } = context;
+  const slug = params.slug;
   
   try {
     const categoryManager = new CategoryManager();
@@ -34,9 +35,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
-  const { slug } = params;
+  const { params } = context;
+  const slug = params.slug;
   
   try {
     const categoryManager = new CategoryManager();

@@ -11,9 +11,10 @@ function truncateDescription(text: string, maxLength: number = 100): string {
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
-  const { slug } = params;
+  const { params } = context;
+  const slug = params.slug;
   
   try {
     const categoryId = slug;
