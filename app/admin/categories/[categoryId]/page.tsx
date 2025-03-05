@@ -7,6 +7,7 @@ import { ProductContent } from '@/app/config/product-content-types'
 import { RichTextEditor } from '@/components/rich-text-editor'
 
 export default function EditCategoryPage({ params }: { params: { categoryId: string } }) {
+  const { categoryId } = params;
   const router = useRouter()
   const [category, setCategory] = useState<ProductContent | null>(null)
   const [loading, setLoading] = useState(true)
@@ -20,54 +21,55 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
   const [submitButtonText, setSubmitButtonText] = useState('Submit New Idea')
   const [submitButtonUrl, setSubmitButtonUrl] = useState('')
   const [showSection2, setShowSection2] = useState(true)
+  const [notFound, setNotFound] = useState(false)
   
   // Fetch category data
   useEffect(() => {
     const fetchCategory = async () => {
+      setLoading(true);
       try {
-        console.log(`Fetching category: ${params.categoryId}`);
-        const response = await fetch(`/api/categories/${params.categoryId}`);
+        console.log(`Fetching category: ${categoryId}`);
+        const response = await fetch(`/api/categories/${categoryId}`);
         
         if (!response.ok) {
-          throw new Error(`Failed to fetch category: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('Category data loaded:', data.title);
-        setCategory(data);
-        
-        // Initialize display settings
-        setShowOnHomePage(data.displaySettings?.showOnHomePage || false);
-        setDisplayOrder(data.displaySettings?.displayOrder || 999);
-        setTileColor(data.displaySettings?.tileColor || 'blue');
-        
-        // Initialize submit button settings
-        if (data.submitButton) {
-          setSubmitButtonText(data.submitButton.text || 'Submit New Idea');
-          setSubmitButtonUrl(data.submitButton.url || '');
-        }
+          if (response.status === 404) {
+            setNotFound(true);
+          } else {
+            throw new Error(`Failed to fetch category: ${response.statusText}`);
+          }
+        } else {
+          const data = await response.json();
+          setCategory(data);
+          setNotFound(false);
+          
+          // Initialize display settings
+          setShowOnHomePage(data.displaySettings?.showOnHomePage || false);
+          setDisplayOrder(data.displaySettings?.displayOrder || 999);
+          setTileColor(data.displaySettings?.tileColor || 'blue');
+          
+          // Initialize submit button settings
+          if (data.submitButton) {
+            setSubmitButtonText(data.submitButton.text || 'Submit New Idea');
+            setSubmitButtonUrl(data.submitButton.url || '');
+          }
 
-        // Check if section 2 exists and has content
-        setShowSection2(data.sections.length > 1 && !!data.sections[1]?.content);
-        
-        setError(null);
+          // Check if section 2 exists and has content
+          setShowSection2(data.sections.length > 1 && !!data.sections[1]?.content);
+        }
       } catch (err) {
-        console.error(`Error loading category ${params.categoryId}:`, err);
-        setError('Failed to load category. Please try again.');
+        console.error(`Error loading category ${categoryId}:`, err);
+        setError(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCategory();
-  }, [params.categoryId]);
+  }, [categoryId]);
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!category) return;
-    
     setSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
@@ -109,7 +111,7 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
     };
     
     try {
-      const response = await fetch(`/api/categories/${params.categoryId}`, {
+      const response = await fetch(`/api/categories/${categoryId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -194,37 +196,39 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold dark:text-gray-100">Edit Category: {params.categoryId}</h1>
-          <Link
-            href="/admin/categories?admin=true"
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium"
-          >
-            Back to Categories
-          </Link>
-        </div>
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading category...</p>
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <div className="animate-pulse text-xl dark:text-gray-100">Loading...</div>
         </div>
       </div>
     );
   }
 
-  if (error || !category) {
+  if (notFound) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold dark:text-gray-100">Edit Category: {params.categoryId}</h1>
-          <Link
-            href="/admin/categories?admin=true"
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium"
-          >
+        <div className="text-center py-12">
+          <h1 className="text-3xl font-bold dark:text-gray-100">Category Not Found</h1>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">The category you're looking for doesn't exist.</p>
+          <Link href="/admin/categories" className="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
             Back to Categories
           </Link>
         </div>
-        <div className="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded mb-4">
-          <p>{error || 'Category not found'}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center py-12">
+          <h1 className="text-3xl font-bold dark:text-gray-100">Error Loading Category</h1>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">There was a problem loading this category.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -233,15 +237,8 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold dark:text-gray-100">Edit Category: {params.categoryId}</h1>
+        <h1 className="text-3xl font-bold dark:text-gray-100">Edit Category: {categoryId}</h1>
         <div className="space-x-4">
-          <Link
-            href={`/tickets/${params.categoryId}`}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 font-medium"
-            target="_blank"
-          >
-            View Page
-          </Link>
           <Link
             href="/admin/categories?admin=true"
             className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 font-medium"

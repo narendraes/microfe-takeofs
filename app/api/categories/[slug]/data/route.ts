@@ -13,8 +13,10 @@ export async function GET(
   request: Request,
   { params }: { params: { slug: string } }
 ) {
+  const { slug } = params;
+  
   try {
-    const categoryId = params.slug;
+    const categoryId = slug;
     const categoryManager = new CategoryManager();
     const categoryContent = categoryManager.getCategoryContent(categoryId);
     
@@ -38,7 +40,7 @@ export async function GET(
     
     return NextResponse.json(formattedCategory);
   } catch (error) {
-    console.error(`Error fetching category data for ID ${params.slug}:`, error);
+    console.error(`Error fetching category data for ID ${slug}:`, error);
     return NextResponse.json(
       { error: 'Failed to fetch category data' },
       { status: 500 }

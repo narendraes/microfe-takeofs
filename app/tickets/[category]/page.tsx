@@ -7,6 +7,7 @@ import { ProductContent } from "@/app/config/product-content-types"
 import Link from "next/link"
 
 export default function TicketPage({ params }: { params: { category: string } }) {
+  const { category } = params;
   const [content, setContent] = useState<ProductContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -15,7 +16,7 @@ export default function TicketPage({ params }: { params: { category: string } })
   useEffect(() => {
     const fetchCategoryData = async () => {
       try {
-        const response = await fetch(`/api/categories/${params.category}`);
+        const response = await fetch(`/api/categories/${category}`);
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -36,7 +37,7 @@ export default function TicketPage({ params }: { params: { category: string } })
     };
 
     fetchCategoryData();
-  }, [params.category]);
+  }, [category]);
 
   // Loading state
   if (loading) {

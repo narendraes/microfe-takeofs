@@ -6,24 +6,29 @@ export async function GET(
   request: Request,
   { params }: { params: { slug: string } }
 ) {
+  const { slug } = params;
+  
   try {
     const categoryManager = new CategoryManager();
-    const category = categoryManager.getCategoryContent(params.slug);
+    const category = categoryManager.getCategoryContent(slug);
     
     if (!category) {
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      );
+      return new Response(JSON.stringify({ error: 'Category not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
     
-    return NextResponse.json(category);
+    return new Response(JSON.stringify(category), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    console.error(`Error fetching category ${params.slug}:`, error);
-    return NextResponse.json(
-      { error: 'Failed to fetch category' },
-      { status: 500 }
-    );
+    console.error(`Error fetching category ${slug}:`, error);
+    return new Response(JSON.stringify({ error: 'Failed to fetch category' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
 
@@ -31,34 +36,39 @@ export async function PUT(
   request: Request,
   { params }: { params: { slug: string } }
 ) {
+  const { slug } = params;
+  
   try {
-    const body = await request.json();
     const categoryManager = new CategoryManager();
     
-    // Check if category exists
-    if (!categoryManager.getValidCategories().includes(params.slug)) {
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      );
+    // Validate that the category exists
+    if (!categoryManager.getValidCategories().includes(slug)) {
+      return new Response(JSON.stringify({ error: 'Category not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
     
-    const success = categoryManager.saveCategoryContent(params.slug, body);
+    const body = await request.json();
+    const success = categoryManager.saveCategoryContent(slug, body);
     
-    if (success) {
-      return NextResponse.json({ success: true });
-    } else {
-      return NextResponse.json(
-        { error: 'Failed to update category' },
-        { status: 500 }
-      );
+    if (!success) {
+      return new Response(JSON.stringify({ error: 'Failed to update category' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
+    
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    console.error(`Error updating category ${params.slug}:`, error);
-    return NextResponse.json(
-      { error: 'Failed to update category' },
-      { status: 500 }
-    );
+    console.error(`Error updating category ${slug}:`, error);
+    return new Response(JSON.stringify({ error: 'Failed to update category' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
 
