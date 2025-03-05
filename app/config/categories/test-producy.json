@@ -1,0 +1,36 @@
+{
+  "title": "Test Product for content.. check this out",
+  "description": "All informaiton on the test project Great! I've successfully reverted the last commit that added the floating button. The changes have been completely removed, and your codebase is now back to its previous state before we implemented the floating button.\n",
+  "sections": [
+    {
+      "title": "what we do",
+      "content": "<h1><strong>AI and machine learning products</strong></h1><h5><strong>Vertex AI Agent Builder</strong></h5><p></p><p>Create a range of generative AI agents and applications grounded in your organization’s data. Vertex AI Agent Builder provides the convenience of a no code agent building console alongside powerful grounding, orchestration and customization capabilities.</p><p></p>"
+    },
+    {
+      "title": "Section 2",
+      "content": "<h5><strong>Vertex AI Agent Builder</strong></h5><p></p><p>Create a range of generative AI agents and applications grounded in your organization’s data. Vertex AI Agent Builder provides the convenience of a no code agent building console alongside powerful grounding, orchestration and customization capabilities.</p><p></p>"
+    }
+  ],
+  "guidelines": {
+    "title": "Guidelines",
+    "items": [
+      "Guideline 1",
+      "Guideline 2",
+      "Guideline 3"
+    ]
+  },
+  "contactInfo": {
+    "name": "tbd",
+    "role": "tbd",
+    "email": "tbd@tbd.com"
+  },
+  "displaySettings": {
+    "showOnHomePage": true,
+    "displayOrder": 999,
+    "tileColor": "blue"
+  },
+  "submitButton": {
+    "text": "Submit New Idea",
+    "url": ""
+  }
+}
