@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+commonLabels:
+  app: microfe-takeofs
+  environment: production
+
+namespace: microfe-takeofs
+
+images:
+  - name: ${DOCKER_REGISTRY}/microfe-takeofs
+    newTag: ${IMAGE_TAG} 

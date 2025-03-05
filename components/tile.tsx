@@ -59,7 +59,7 @@ export function Tile({
 
   // Fetch category data if title is not provided
   useEffect(() => {
-    if (!tileData.isLoading) return;
+    if (!tileData.isLoading || !categoryId) return;
 
     const fetchCategoryData = async () => {
       try {
