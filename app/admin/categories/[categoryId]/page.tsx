@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ProductContent } from '@/app/config/product-content-types'
+import { RichTextEditor } from '@/components/rich-text-editor'
 
 export default function EditCategoryPage({ params }: { params: { categoryId: string } }) {
   const router = useRouter()
@@ -18,6 +19,7 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
   const [tileColor, setTileColor] = useState('blue')
   const [submitButtonText, setSubmitButtonText] = useState('Submit New Idea')
   const [submitButtonUrl, setSubmitButtonUrl] = useState('')
+  const [showSection2, setShowSection2] = useState(true)
   
   // Fetch category data
   useEffect(() => {
@@ -44,6 +46,9 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
           setSubmitButtonText(data.submitButton.text || 'Submit New Idea');
           setSubmitButtonUrl(data.submitButton.url || '');
         }
+
+        // Check if section 2 exists and has content
+        setShowSection2(data.sections.length > 1 && !!data.sections[1]?.content);
         
         setError(null);
       } catch (err) {
@@ -67,9 +72,31 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
     setSaveError(null);
     setSaveSuccess(false);
     
+    // Prepare sections based on showSection2 flag
+    let updatedSections = [...category.sections];
+    
+    // Ensure we have at least one section
+    if (updatedSections.length === 0) {
+      updatedSections.push({ title: 'Section 1', content: '' });
+    }
+    
+    // Handle section 2 visibility
+    if (showSection2) {
+      // Ensure we have a second section
+      if (updatedSections.length < 2) {
+        updatedSections.push({ title: 'Section 2', content: '' });
+      }
+    } else {
+      // Remove section 2 if it exists and showSection2 is false
+      if (updatedSections.length > 1) {
+        updatedSections = updatedSections.slice(0, 1);
+      }
+    }
+    
     // Update display settings
     const updatedCategory = {
       ...category,
+      sections: updatedSections,
       displaySettings: {
         showOnHomePage,
         displayOrder,
@@ -121,6 +148,12 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
     if (!category) return;
     
     const updatedSections = [...category.sections];
+    
+    // Ensure the section exists
+    if (!updatedSections[index]) {
+      updatedSections[index] = { title: `Section ${index + 1}`, content: '' };
+    }
+    
     updatedSections[index] = {
       ...updatedSections[index],
       [field]: value,
@@ -254,9 +287,13 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
                 value={category.description}
                 onChange={(e) => handleChange('description', e.target.value)}
                 rows={3}
+                maxLength={256}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
                 required
               />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Brief description (max 256 characters). {category.description.length}/256
+              </p>
             </div>
           </div>
         </div>
@@ -316,9 +353,55 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Sections</h2>
           <div className="space-y-6">
-            {category.sections.map((section, index) => (
-              <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-md p-4">
-                <h3 className="text-lg font-medium mb-3 dark:text-gray-200">Section {index + 1}</h3>
+            {/* Section 1 */}
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4">
+              <h3 className="text-lg font-medium mb-3 dark:text-gray-200">Section 1</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    value={category.sections[0]?.title || ''}
+                    onChange={(e) => handleSectionChange(0, 'title', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Content
+                  </label>
+                  <RichTextEditor
+                    content={category.sections[0]?.content || ''}
+                    onChange={(value) => handleSectionChange(0, 'content', value)}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 2 Toggle */}
+            <div className="flex items-center space-x-2">
+              <label className="inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={showSection2}
+                  onChange={() => setShowSection2(!showSection2)}
+                />
+                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Include Section 2
+                </span>
+              </label>
+            </div>
+
+            {/* Section 2 (Conditional) */}
+            {showSection2 && (
+              <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4">
+                <h3 className="text-lg font-medium mb-3 dark:text-gray-200">Section 2</h3>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -326,27 +409,25 @@ export default function EditCategoryPage({ params }: { params: { categoryId: str
                     </label>
                     <input
                       type="text"
-                      value={section.title}
-                      onChange={(e) => handleSectionChange(index, 'title', e.target.value)}
+                      value={category.sections[1]?.title || ''}
+                      onChange={(e) => handleSectionChange(1, 'title', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                      required
+                      required={showSection2}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Content
                     </label>
-                    <textarea
-                      value={section.content}
-                      onChange={(e) => handleSectionChange(index, 'content', e.target.value)}
-                      rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                      required
+                    <RichTextEditor
+                      content={category.sections[1]?.content || ''}
+                      onChange={(value) => handleSectionChange(1, 'content', value)}
+                      required={showSection2}
                     />
                   </div>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
