@@ -13,9 +13,10 @@ export function ProductSection({ title, content, subsections }: ProductSectionPr
   return (
     <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
       <h2 className="text-2xl font-semibold mb-4 text-primary dark:text-primary">{title}</h2>
-      <div className="prose dark:prose-invert max-w-none mb-6">
-        <p className="text-gray-700 dark:text-gray-300">{content}</p>
-      </div>
+      <div 
+        className="prose dark:prose-invert prose-headings:text-primary prose-a:text-blue-600 dark:prose-a:text-blue-400 max-w-none mb-6 text-gray-700 dark:text-gray-300"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
       
       {subsections && subsections.map((subsection, index) => (
         <div key={index} className="mt-6">
