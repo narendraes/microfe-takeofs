@@ -6,28 +6,16 @@ interface SubsectionProps {
 interface ProductSectionProps {
   title: string
   content: string
-  subsections?: SubsectionProps[]
 }
 
-export function ProductSection({ title, content, subsections }: ProductSectionProps) {
+export function ProductSection({ title, content }: ProductSectionProps) {
   return (
     <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
       <h2 className="text-2xl font-semibold mb-4 text-primary dark:text-primary">{title}</h2>
       <div 
-        className="prose dark:prose-invert prose-headings:text-primary prose-a:text-blue-600 dark:prose-a:text-blue-400 max-w-none mb-6 text-gray-700 dark:text-gray-300"
+        className="prose dark:prose-invert prose-headings:text-primary prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-4 prose-p:my-2 max-w-none mb-6 text-gray-700 dark:text-gray-300"
         dangerouslySetInnerHTML={{ __html: content }}
       />
-      
-      {subsections && subsections.map((subsection, index) => (
-        <div key={index} className="mt-6">
-          <h3 className="text-lg font-medium mb-3 dark:text-gray-200">{subsection.title}</h3>
-          <ul className="list-disc pl-6 space-y-2">
-            {subsection.items.map((item, itemIndex) => (
-              <li key={itemIndex} className="text-gray-600 dark:text-gray-400">{item}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
     </section>
   )
 }

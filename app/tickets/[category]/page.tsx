@@ -82,7 +82,6 @@ export default function TicketPage({ params }: { params: { category: string } })
               key={index}
               title={section.title}
               content={section.content}
-              subsections={section.subsections}
             />
           ))}
         </div>
