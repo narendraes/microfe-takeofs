@@ -189,7 +189,7 @@ export default function EditCategoryPage() {
     setCategory({
       ...category,
       contactInfo: {
-        ...category.contactInfo,
+        ...category.contactInfo || {}, // Handle case where contactInfo might be undefined
         [field]: value,
       },
     });
@@ -464,6 +464,7 @@ export default function EditCategoryPage() {
         {/* Contact Info */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Contact Information</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">All fields are optional. Leave empty to hide contact information.</p>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -471,10 +472,9 @@ export default function EditCategoryPage() {
               </label>
               <input
                 type="text"
-                value={category.contactInfo.name}
+                value={category.contactInfo?.name || ''}
                 onChange={(e) => handleContactChange('name', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                required
               />
             </div>
             <div>
@@ -483,10 +483,9 @@ export default function EditCategoryPage() {
               </label>
               <input
                 type="text"
-                value={category.contactInfo.role}
+                value={category.contactInfo?.role || ''}
                 onChange={(e) => handleContactChange('role', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                required
               />
             </div>
             <div>
@@ -495,10 +494,9 @@ export default function EditCategoryPage() {
               </label>
               <input
                 type="email"
-                value={category.contactInfo.email}
+                value={category.contactInfo?.email || ''}
                 onChange={(e) => handleContactChange('email', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                required
               />
             </div>
           </div>

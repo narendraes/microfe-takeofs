@@ -96,6 +96,8 @@ export default function TicketPage() {
             title={content.guidelines.title}
             items={content.guidelines.items}
           />
+          
+          {/* ContactInfo will only render if at least one field is provided */}
           <ContactInfo {...content.contactInfo} />
           
           <a 

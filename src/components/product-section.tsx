@@ -42,24 +42,31 @@ export function GuidelinesSection({ title, items }: GuidelinesSectionProps) {
 }
 
 interface ContactInfoProps {
-  name: string
-  role: string
-  email: string
+  name?: string
+  role?: string
+  email?: string
 }
 
 export function ContactInfo({ name, role, email }: ContactInfoProps) {
+  // If all fields are empty or undefined, don't render anything
+  if (!name && !role && !email) {
+    return null;
+  }
+  
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
       <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Contact Information</h2>
       <div className="space-y-2">
-        <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Name:</span> {name}</p>
-        <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Role:</span> {role}</p>
-        <p className="text-gray-700 dark:text-gray-300">
-          <span className="font-medium">Email:</span>{' '}
-          <a href={`mailto:${email}`} className="text-primary hover:underline">
-            {email}
-          </a>
-        </p>
+        {name && <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Name:</span> {name}</p>}
+        {role && <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Role:</span> {role}</p>}
+        {email && (
+          <p className="text-gray-700 dark:text-gray-300">
+            <span className="font-medium">Email:</span>{' '}
+            <a href={`mailto:${email}`} className="text-primary hover:underline">
+              {email}
+            </a>
+          </p>
+        )}
       </div>
     </div>
   )

@@ -13,10 +13,10 @@ export type ProductContent = {
     title: string;
     items: string[];
   };
-  contactInfo: {
-    name: string;
-    role: string;
-    email: string;
+  contactInfo?: {
+    name?: string;
+    role?: string;
+    email?: string;
   };
   displaySettings?: {
     showOnHomePage: boolean;
