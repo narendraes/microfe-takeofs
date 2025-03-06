@@ -31,7 +31,7 @@ export interface AllowListRule {
   permissionsRequired: string[];
 }
 
-export type IntentCategory = 'reporting' | 'data_retrieval' | 'analysis';
+export type IntentCategory = 'reporting' | 'data_retrieval' | 'analysis' | 'connection_check' | 'undefined';
 
 export interface QueryIntent {
   category: IntentCategory;

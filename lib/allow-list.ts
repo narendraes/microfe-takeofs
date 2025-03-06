@@ -32,6 +32,12 @@ const ALLOW_LIST_RULES: AllowListRule[] = [
     jiraObjects: ['issue', 'fixVersion'],
     permissionsRequired: ['jira:read'],
   },
+  {
+    intent: 'connection_check',
+    allowedActions: ['read'],
+    jiraObjects: ['connection', 'server', 'status'],
+    permissionsRequired: ['jira:read'],
+  },
 ];
 
 export function validateQueryIntent(intent: QueryIntent): {
@@ -41,12 +47,18 @@ export function validateQueryIntent(intent: QueryIntent): {
   console.log('[AllowList] Validating query intent:', intent);
   
   // Check if the intent category is valid
-  if (!['reporting', 'data_retrieval', 'analysis'].includes(intent.category)) {
+  if (!['reporting', 'data_retrieval', 'analysis', 'connection_check'].includes(intent.category)) {
     console.log(`[AllowList] Invalid intent category: ${intent.category}`);
     return {
       isAllowed: false,
       reason: `Intent category "${intent.category}" is not supported.`,
     };
+  }
+
+  // Special case for connection check queries
+  if (intent.category === 'connection_check') {
+    console.log('[AllowList] Connection check query detected, allowing');
+    return { isAllowed: true };
   }
 
   // Check if all actions are allowed

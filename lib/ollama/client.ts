@@ -83,10 +83,13 @@ export class OllamaClient {
       
       Respond in JSON format with the following structure:
       {
-        "category": "reporting" | "data_retrieval" | "analysis",
+        "category": "reporting" or "data_retrieval" or "analysis" or "undefined" if unclear,
         "jiraObjects": ["issue", "sprint", "project", etc.],
         "actions": ["read", "aggregate", "format", etc.]
       }
+      
+      Important: Use only one value for category, not multiple values with | operators.
+      Return valid JSON that can be parsed with JSON.parse().
     `;
 
     try {
@@ -97,9 +100,26 @@ export class OllamaClient {
       // Extract JSON from the response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        const parsedIntent = JSON.parse(jsonMatch[0]);
-        console.log('[OllamaClient] Parsed intent:', parsedIntent);
-        return parsedIntent;
+        try {
+          const jsonStr = jsonMatch[0];
+          // Clean up common JSON issues
+          const cleanedJson = jsonStr
+            .replace(/(\w+)(\s*\|\s*\w+)+/g, '$1') // Replace "value1 | value2" with just "value1"
+            .replace(/'/g, '"'); // Replace single quotes with double quotes
+          
+          console.log('[OllamaClient] Cleaned JSON:', cleanedJson);
+          const parsedIntent = JSON.parse(cleanedJson);
+          console.log('[OllamaClient] Parsed intent:', parsedIntent);
+          return parsedIntent;
+        } catch (parseError) {
+          console.error('[OllamaClient] JSON parse error:', parseError);
+          // Fallback to a default structure if parsing fails
+          return {
+            category: "undefined",
+            jiraObjects: [],
+            actions: []
+          };
+        }
       }
       
       console.error('[OllamaClient] Could not parse intent analysis response');
