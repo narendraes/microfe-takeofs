@@ -34,7 +34,7 @@ const nextConfig = {
               script-src 'self' 'unsafe-inline' 'unsafe-eval';
               style-src 'self' 'unsafe-inline';
               img-src 'self' data:;
-              connect-src 'self';
+              connect-src 'self' http://localhost:11434;
               frame-src 'self';
             `.replace(/\s+/g, ' ').trim()
           }
