@@ -2,6 +2,8 @@
 
 import { TileGrid } from "@/components/tile-grid"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function Home() {
   return (
@@ -43,6 +45,23 @@ export default function Home() {
           </tbody>
         </table>
       </footer>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
+        <Card>
+          <CardHeader>
+            <CardTitle>PromptDojo</CardTitle>
+            <CardDescription>AI-powered Jira Integration</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p>Access Jira data through natural language queries. Get insights, reports, and analytics with ease.</p>
+          </CardContent>
+          <CardFooter>
+            <Button asChild>
+              <Link href="/promptdojo">Open PromptDojo</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </main>
   )
 }

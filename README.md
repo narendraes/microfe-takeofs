@@ -1,3 +1,97 @@
+# PromptDojo - Jira Integration
+
+PromptDojo is a modern AI chat interface for interacting with Jira and obtaining customized reporting output. This feature aims to streamline access to Jira data through natural language processing.
+
+## Features
+
+### Phase 1 MVP (Current)
+- Basic chat interface
+- Connection to Jira API (read-only)
+- Simple query handling
+- LLM integration with basic allow-list
+- GitHub secrets integration
+
+## Tech Stack
+
+- Next.js 14 with App Router
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+- Ollama for LLM integration
+
+## Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- Ollama running locally at http://localhost:11434/ with llama3.2 model
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000/promptdojo](http://localhost:3000/promptdojo) in your browser
+
+## Project Structure
+
+```
+promptdojo/
+├── app/                  # Next.js App Router
+│   ├── promptdojo/       # PromptDojo page
+│   └── layout.tsx        # Root layout
+├── components/           # React components
+│   ├── chat/             # Chat-related components
+│   └── ui/               # UI components (Shadcn)
+├── lib/                  # Utility functions and services
+│   ├── api/              # API clients
+│   ├── ollama/           # Ollama integration
+│   └── types.ts          # TypeScript types
+└── public/               # Static assets
+```
+
+## Configuration
+
+### Jira API
+
+To connect to Jira, you'll need to set up the following environment variables:
+
+```
+JIRA_API_URL=your-jira-instance-url
+JIRA_API_TOKEN=your-jira-api-token
+```
+
+### Ollama
+
+The application is configured to connect to Ollama running locally at http://localhost:11434/ using the llama3.2 model. You can modify these settings in `lib/ollama/client.ts`.
+
+## Known Issues and Workarounds
+
+### UUID Dependency
+
+The project initially used the `uuid` package for generating unique IDs. However, there were issues with the package not being properly resolved by Next.js. As a workaround, we've implemented a simple ID generation function using `Math.random()`:
+
+```typescript
+const generateId = () => {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
+```
+
+This function is used in `components/chat/chat-container.tsx` to generate unique IDs for chat messages.
+
+## Development Roadmap
+
+See the [PRD](docs/prd/promptdojo-jira-integration.md) for the complete development roadmap and feature list.
+
+## License
+
+MIT
+
 # Product Feedback Portal
 
 A Next.js application for collecting and managing product feedback across different categories.
