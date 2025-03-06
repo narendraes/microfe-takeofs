@@ -4,6 +4,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { Message as MessageType } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 
 interface MessageProps {
   message: MessageType;
@@ -11,6 +12,12 @@ interface MessageProps {
 
 export function Message({ message }: MessageProps) {
   const isUser = message.role === 'user';
+  const [formattedTime, setFormattedTime] = useState<string>('');
+  
+  // Use useEffect to handle time formatting on the client side only
+  useEffect(() => {
+    setFormattedTime(new Date(message.timestamp).toLocaleTimeString());
+  }, [message.timestamp]);
   
   return (
     <div className={cn(
@@ -38,7 +45,7 @@ export function Message({ message }: MessageProps) {
             {message.content}
           </div>
           <div className="text-xs text-neutral-400 mt-1 text-right">
-            {new Date(message.timestamp).toLocaleTimeString()}
+            {formattedTime}
           </div>
         </Card>
       </div>
