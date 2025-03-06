@@ -39,12 +39,12 @@ export function Message({ message }: MessageProps) {
         
         <Card className={cn(
           'p-3 text-sm',
-          isUser ? 'bg-blue-50' : 'bg-white'
+          isUser ? 'bg-blue-50 dark:bg-blue-900/30' : 'bg-white dark:bg-gray-800'
         )}>
-          <div className="whitespace-pre-wrap">
+          <div className="whitespace-pre-wrap dark:text-gray-200">
             {message.content}
           </div>
-          <div className="text-xs text-neutral-400 mt-1 text-right">
+          <div className="text-xs text-neutral-400 dark:text-neutral-500 mt-1 text-right">
             {formattedTime}
           </div>
         </Card>

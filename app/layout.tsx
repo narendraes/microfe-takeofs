@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Image from "next/image"
+import Link from "next/link"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Corporate Portal",
-  description: "A micro frontend corporate portal",
+  title: "PromptDojo Jira Integration",
+  description: "AI-powered chat interface for Jira data retrieval and analysis",
   generator: 'v0.dev'
 }
 
@@ -38,10 +39,11 @@ export default function RootLayout({
               <div className="flex items-center gap-2">
                 {/* Replace src with your actual logo path */}
                 <Image
-                  src="/logo.png"
+                  src="/placeholder-logo.png"
                   alt="Corporate Logo"
                   width={40}
                   height={40}
+                  style={{ width: 'auto', height: 'auto' }}
                   className="object-contain"
                 />
                 <span className="text-xl font-bold">LiftOFS</span>
@@ -59,6 +61,14 @@ export default function RootLayout({
                       <TabsTrigger value="home" asChild>
                         <a href="/">Home</a>
                       </TabsTrigger>
+                      <TabsTrigger value="promptdojo" asChild>
+                        <Link 
+                          href="/promptdojo" 
+                          className="text-sm font-medium transition-colors hover:text-primary"
+                        >
+                          PromptDojo
+                        </Link>
+                      </TabsTrigger>
                       {/* TODO: Future Tabs to be implemented
                       - Tab2: Product Management Dashboard
                       - Tab3: Platform Analytics
@@ -68,6 +78,9 @@ export default function RootLayout({
                   </div>
                 </div>
                 <TabsContent value="home" className="space-y-4">
+                  {children}
+                </TabsContent>
+                <TabsContent value="promptdojo" className="space-y-4">
                   {children}
                 </TabsContent>
                 {/* TODO: Content for future tabs

@@ -30,12 +30,12 @@ export class OllamaClient {
   async generateCompletion(options: OllamaRequestOptions): Promise<string> {
     const { prompt, model = this.config.model, stream = false, options: additionalOptions = {} } = options;
     
-    console.log(`[OllamaClient] Sending request to ${this.config.apiUrl}/api/generate with model: ${model}`);
+    console.log(`[OllamaClient] Sending request to /api/ollama/generate with model: ${model}`);
     console.log('[OllamaClient] Prompt:', prompt.substring(0, 100) + (prompt.length > 100 ? '...' : ''));
     
     try {
       console.log('[OllamaClient] Making API request...');
-      const response = await fetch(`${this.config.apiUrl}/api/generate`, {
+      const response = await fetch(`/api/ollama/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

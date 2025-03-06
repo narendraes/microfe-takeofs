@@ -131,13 +131,13 @@ export function ChatContainer() {
   };
 
   return (
-    <Card className="flex flex-col h-full">
+    <Card className="flex flex-col h-full dark:border-gray-800">
       <div className="flex-1 overflow-y-auto p-4">
         {/* Debug toggle button */}
         <div className="flex justify-end mb-2">
           <button 
             onClick={() => setShowDebug(!showDebug)} 
-            className="text-xs text-gray-500 hover:text-gray-700"
+            className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
           >
             {showDebug ? 'Hide Debug Info' : 'Show Debug Info'}
           </button>
@@ -153,7 +153,7 @@ export function ChatContainer() {
         
         {/* Error display (only shown when debug is enabled) */}
         {showDebug && chatState.error && (
-          <div className="mt-4 p-3 border border-red-300 rounded-md bg-red-50 text-red-800 text-sm">
+          <div className="mt-4 p-3 border border-red-300 rounded-md bg-red-50 text-red-800 text-sm dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
             <strong>Error:</strong> {chatState.error}
           </div>
         )}

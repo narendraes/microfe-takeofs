@@ -14,7 +14,7 @@ export function OllamaStatus() {
     
     try {
       console.log('[OllamaStatus] Checking Ollama server status...');
-      const response = await fetch('http://localhost:11434/api/tags', {
+      const response = await fetch('/api/ollama/status', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -45,8 +45,8 @@ export function OllamaStatus() {
   }, []);
 
   return (
-    <div className="mb-4 p-3 border rounded-md bg-gray-50">
-      <h3 className="text-sm font-medium mb-2">Ollama Server Status</h3>
+    <div className="mb-4 p-3 border rounded-md bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
+      <h3 className="text-sm font-medium mb-2 dark:text-gray-200">Ollama Server Status</h3>
       
       <div className="flex items-center gap-2 mb-2">
         <div 
@@ -55,7 +55,7 @@ export function OllamaStatus() {
             status === 'running' ? 'bg-green-500' : 'bg-red-500'
           }`} 
         />
-        <span className="text-sm">
+        <span className="text-sm dark:text-gray-300">
           {status === 'checking' ? 'Checking...' : 
            status === 'running' ? 'Running' : 'Not Running'}
         </span>
@@ -68,7 +68,7 @@ export function OllamaStatus() {
       )}
       
       {status === 'running' && models.length > 0 && (
-        <div className="text-xs mb-2">
+        <div className="text-xs mb-2 dark:text-gray-400">
           Available models: {models.join(', ')}
         </div>
       )}
