@@ -2,6 +2,7 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Link from '@tiptap/extension-link'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { 
@@ -13,9 +14,19 @@ import {
   Heading3,
   Undo,
   Redo,
-  Link,
+  Link as LinkIcon,
   Code
 } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 interface RichTextEditorProps {
   content: string
@@ -31,11 +42,19 @@ export function RichTextEditor({
   required = false
 }: RichTextEditorProps) {
   const [isMounted, setIsMounted] = useState(false)
+  const [linkUrl, setLinkUrl] = useState('')
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false)
   
   // Initialize the editor
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-primary underline',
+        },
+      }),
     ],
     content: content,
     editorProps: {
@@ -59,6 +78,33 @@ export function RichTextEditor({
       editor.commands.setContent(content)
     }
   }, [content, editor])
+
+  const setLink = () => {
+    if (!linkUrl) {
+      editor?.chain().focus().extendMarkRange('link').unsetLink().run()
+      return
+    }
+
+    // Add https:// if no protocol is specified
+    const url = linkUrl.startsWith('http://') || linkUrl.startsWith('https://') 
+      ? linkUrl 
+      : `https://${linkUrl}`
+
+    editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+    setLinkUrl('')
+    setLinkDialogOpen(false)
+  }
+
+  const handleLinkButtonClick = () => {
+    // If text is selected and it's a link, get the URL
+    if (editor?.isActive('link')) {
+      const attrs = editor.getAttributes('link')
+      setLinkUrl(attrs.href || '')
+    } else {
+      setLinkUrl('')
+    }
+    setLinkDialogOpen(true)
+  }
 
   if (!isMounted) {
     return null
@@ -137,6 +183,57 @@ export function RichTextEditor({
         >
           <Code className="h-4 w-4" />
         </Button>
+        
+        {/* Link Button */}
+        <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleLinkButtonClick}
+            className={editor?.isActive('link') ? 'bg-muted' : ''}
+            aria-label="Add Link"
+          >
+            <LinkIcon className="h-4 w-4" />
+          </Button>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>{editor?.isActive('link') ? 'Edit Link' : 'Add Link'}</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="url">URL</Label>
+                <Input
+                  id="url"
+                  value={linkUrl}
+                  onChange={(e) => setLinkUrl(e.target.value)}
+                  placeholder="https://example.com"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              {editor?.isActive('link') && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => {
+                    editor?.chain().focus().extendMarkRange('link').unsetLink().run()
+                    setLinkDialogOpen(false)
+                  }}
+                >
+                  Remove Link
+                </Button>
+              )}
+              <Button type="button" variant="outline" onClick={() => setLinkDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={setLink}>
+                Save
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
         <div className="ml-auto flex gap-1">
           <Button
             type="button"
