@@ -4,7 +4,7 @@
   "sections": [
     {
       "title": "What We Do",
-      "content": "<p><strong>Banking Product Areas</strong></p><p>Core Banking, BIS, ...</p><p>more</p><h2><strong>Bold text</strong></h2><p>done</p>",
+      "content": "<p><strong>Banking Product Areas</strong></p><p><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"text-primary underline\" href=\"https://google.com\">Core Banking, BIS, ...</a></p><p>more</p><h2><strong>Bold text</strong></h2><p>done</p>",
       "subsections": [
         {
           "title": "Key Focus Areas",
@@ -57,5 +57,9 @@
   "submitButton": {
     "text": "Submit New Idea",
     "url": "www.google.com"
+  },
+  "needAccess": {
+    "title": "Not a Jira users? you will need idea contributor access ",
+    "url": "/idea-contributor-access"
   }
 }
