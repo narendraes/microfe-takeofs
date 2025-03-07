@@ -12,7 +12,7 @@ export default function TicketPage() {
   const params = useParams();
   const category = params.category as string;
   
-  const [content, setContent] = useState<ProductContent | null>(null);
+  const [categoryData, setCategoryData] = useState<ProductContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -30,7 +30,7 @@ export default function TicketPage() {
         }
         
         const data = await response.json();
-        setContent(data);
+        setCategoryData(data);
         setError(false);
       } catch (err) {
         console.error("Error fetching category data:", err);
@@ -53,7 +53,7 @@ export default function TicketPage() {
   }
 
   // Error state
-  if (error || !content) {
+  if (error || !categoryData) {
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 dark:text-gray-100">Content Coming Soon</h1>
@@ -77,12 +77,12 @@ export default function TicketPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-4 dark:text-gray-100">{content.title}</h1>
-      <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{content.description}</p>
+      <h1 className="text-4xl font-bold mb-4 dark:text-gray-100">{categoryData.title}</h1>
+      <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{categoryData.description}</p>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          {content.sections.map((section: ProductContent['sections'][0], index: number) => (
+          {categoryData.sections.map((section: ProductContent['sections'][0], index: number) => (
             <ProductSection 
               key={index}
               title={section.title}
@@ -93,30 +93,32 @@ export default function TicketPage() {
         
         <div className="space-y-8">
           <GuidelinesSection 
-            title={content.guidelines.title}
-            items={content.guidelines.items}
+            title={categoryData.guidelines.title}
+            items={categoryData.guidelines.items}
           />
           
           {/* ContactInfo will only render if at least one field is provided */}
-          <ContactInfo {...content.contactInfo} />
+          <ContactInfo {...categoryData.contactInfo} />
           
           <a 
-            href={formatUrl(content.submitButton?.url || '#')} 
+            href={formatUrl(categoryData.submitButton?.url || '#')} 
             target="_blank" 
             rel="noopener noreferrer"
             className="block w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 font-medium shadow-sm transition-colors text-center"
           >
-            {content.submitButton?.text || 'Submit New Idea'}
+            {categoryData.submitButton?.text || 'Submit New Idea'}
           </a>
           
-          <div className="mt-2 text-center">
-            <Link 
-              href="/idea-contributor-access" 
-              className="text-sm text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-            >
-              Need access? Visit Idea Contributor Access
-            </Link>
-          </div>
+          {categoryData.needAccess?.title && categoryData.needAccess?.url && (
+            <div className="mt-2 text-center">
+              <Link 
+                href={categoryData.needAccess.url} 
+                className="text-sm text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+              >
+                {categoryData.needAccess.title}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

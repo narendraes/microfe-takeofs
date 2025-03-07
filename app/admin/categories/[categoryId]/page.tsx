@@ -22,6 +22,8 @@ export default function EditCategoryPage() {
   const [tileColor, setTileColor] = useState('blue')
   const [submitButtonText, setSubmitButtonText] = useState('Submit New Idea')
   const [submitButtonUrl, setSubmitButtonUrl] = useState('')
+  const [needAccessTitle, setNeedAccessTitle] = useState('')
+  const [needAccessUrl, setNeedAccessUrl] = useState('')
   const [showSection2, setShowSection2] = useState(true)
   const [notFound, setNotFound] = useState(false)
   
@@ -50,23 +52,27 @@ export default function EditCategoryPage() {
           setTileColor(data.displaySettings?.tileColor || 'blue');
           
           // Initialize submit button settings
-          if (data.submitButton) {
-            setSubmitButtonText(data.submitButton.text || 'Submit New Idea');
-            setSubmitButtonUrl(data.submitButton.url || '');
-          }
-
+          setSubmitButtonText(data.submitButton?.text || 'Submit New Idea');
+          setSubmitButtonUrl(data.submitButton?.url || '');
+          
+          // Initialize need access settings
+          setNeedAccessTitle(data.needAccess?.title || '');
+          setNeedAccessUrl(data.needAccess?.url || '');
+  
           // Check if section 2 exists and has content
-          setShowSection2(data.sections.length > 1 && !!data.sections[1]?.content);
+          setShowSection2(data.sections.length > 1 && Boolean(data.sections[1]));
         }
-      } catch (err) {
-        console.error(`Error loading category ${categoryId}:`, err);
-        setError(true);
+      } catch (error) {
+        console.error('Error fetching category:', error);
+        setError('Failed to fetch category data. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCategory();
+    if (categoryId) {
+      fetchCategory();
+    }
   }, [categoryId]);
 
   // Handle form submission
@@ -99,7 +105,7 @@ export default function EditCategoryPage() {
     
     // Update display settings
     const updatedCategory = {
-      ...category,
+      ...category!,
       sections: updatedSections,
       displaySettings: {
         showOnHomePage,
@@ -109,6 +115,10 @@ export default function EditCategoryPage() {
       submitButton: {
         text: submitButtonText,
         url: submitButtonUrl
+      },
+      needAccess: {
+        title: needAccessTitle,
+        url: needAccessUrl
       }
     };
     
@@ -398,7 +408,7 @@ export default function EditCategoryPage() {
             </div>
 
             {/* Section 2 (Conditional) */}
-            {showSection2 && (
+            {showSection2 && category && (
               <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4">
                 <h3 className="text-lg font-medium mb-3 dark:text-gray-200">Section 2</h3>
                 <div className="space-y-4">
@@ -431,76 +441,80 @@ export default function EditCategoryPage() {
         </div>
 
         {/* Guidelines */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Guidelines</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Title
-              </label>
-              <input
-                type="text"
-                value={category.guidelines.title}
-                onChange={(e) => handleGuidelineChange('title', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Items (one per line)
-              </label>
-              <textarea
-                value={category.guidelines.items.join('\n')}
-                onChange={(e) => handleGuidelineChange('items', e.target.value.split('\n'))}
-                rows={5}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-                required
-              />
+        {category && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Guidelines</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={category.guidelines?.title || ''}
+                  onChange={(e) => handleGuidelineChange('title', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Items (one per line)
+                </label>
+                <textarea
+                  value={category.guidelines?.items?.join('\n') || ''}
+                  onChange={(e) => handleGuidelineChange('items', e.target.value.split('\n'))}
+                  rows={5}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                  required
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Contact Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Contact Information</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">All fields are optional. Leave empty to hide contact information.</p>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                value={category.contactInfo?.name || ''}
-                onChange={(e) => handleContactChange('name', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Role
-              </label>
-              <input
-                type="text"
-                value={category.contactInfo?.role || ''}
-                onChange={(e) => handleContactChange('role', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                value={category.contactInfo?.email || ''}
-                onChange={(e) => handleContactChange('email', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
-              />
+        {category && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Contact Information</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">All fields are optional. Leave empty to hide contact information.</p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={category.contactInfo?.name || ''}
+                  onChange={(e) => handleContactChange('name', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Role
+                </label>
+                <input
+                  type="text"
+                  value={category.contactInfo?.role || ''}
+                  onChange={(e) => handleContactChange('role', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={category.contactInfo?.email || ''}
+                  onChange={(e) => handleContactChange('email', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Submit Button Settings */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
@@ -537,6 +551,46 @@ export default function EditCategoryPage() {
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Enter the full URL where users will be directed when they click the button. 
                 Make sure to include the protocol (https:// or http://) for external URLs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Need Access Settings */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Need Access Settings</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Customize the "Need Access" link that appears on the category page. Leave fields empty to hide this section.
+          </p>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Link Text
+              </label>
+              <input
+                type="text"
+                value={needAccessTitle}
+                onChange={(e) => setNeedAccessTitle(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                placeholder="Need access? Visit Idea Contributor Access"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Link URL
+              </label>
+              <input
+                type="text"
+                value={needAccessUrl}
+                onChange={(e) => setNeedAccessUrl(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                placeholder="/idea-contributor-access"
+              />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Enter the URL where users will be directed when they click the "Need Access" link.
+                You can use a relative path (e.g., /idea-contributor-access) or a full URL.
               </p>
             </div>
           </div>

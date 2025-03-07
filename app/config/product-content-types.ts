@@ -27,4 +27,8 @@ export type ProductContent = {
     text: string;
     url: string;
   };
+  needAccess?: {
+    title?: string;
+    url?: string;
+  };
 } 
