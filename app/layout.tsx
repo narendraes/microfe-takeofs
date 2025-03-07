@@ -77,23 +77,7 @@ export default function RootLayout({
                     </TabsList>
                   </div>
                 </div>
-                <TabsContent value="home" className="space-y-4">
-                  {children}
-                </TabsContent>
-                <TabsContent value="promptdojo" className="space-y-4">
-                  {children}
-                </TabsContent>
-                {/* TODO: Content for future tabs
-                <TabsContent value="tab2">
-                  Product Management Dashboard content
-                </TabsContent>
-                <TabsContent value="tab3">
-                  Platform Analytics content
-                </TabsContent>
-                <TabsContent value="admin">
-                  Admin Panel content
-                </TabsContent>
-                */}
+                {children}
               </Tabs>
             </div>
           </div>
