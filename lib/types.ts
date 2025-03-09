@@ -5,12 +5,14 @@ export interface Message {
   role: MessageRole;
   content: string;
   timestamp: number;
+  isTyping?: boolean;
 }
 
 export interface ChatState {
   messages: Message[];
   isLoading: boolean;
   error: string | null;
+  processingTime: number | null;
 }
 
 export interface JiraConfig {
@@ -31,7 +33,7 @@ export interface AllowListRule {
   permissionsRequired: string[];
 }
 
-export type IntentCategory = 'reporting' | 'data_retrieval' | 'analysis' | 'connection_check' | 'undefined';
+export type IntentCategory = 'reporting' | 'data_retrieval' | 'analysis' | 'connection_check' | 'general_knowledge' | 'app_configuration' | 'undefined';
 
 export interface QueryIntent {
   category: IntentCategory;

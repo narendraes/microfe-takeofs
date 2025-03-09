@@ -38,16 +38,45 @@ const ALLOW_LIST_RULES: AllowListRule[] = [
     jiraObjects: ['connection', 'server', 'status'],
     permissionsRequired: ['jira:read'],
   },
+  {
+    intent: 'general_knowledge',
+    allowedActions: ['explain', 'describe', 'define'],
+    jiraObjects: ['jira', 'jql', 'agile', 'scrum', 'kanban', 'workflow', 'product_discovery'],
+    permissionsRequired: [],
+  },
+  {
+    intent: 'app_configuration',
+    allowedActions: ['explain', 'describe', 'help'],
+    jiraObjects: ['app', 'configuration', 'setup', 'settings', 'features', 'usage', 'promptdojo'],
+    permissionsRequired: [],
+  },
+];
+
+// Keywords that indicate a general knowledge question
+const GENERAL_KNOWLEDGE_KEYWORDS = [
+  'what is', 'what are', 'how does', 'explain', 'describe', 'definition',
+  'tell me about', 'information about', 'help me understand', 'guide',
+  'tutorial', 'overview', 'introduction', 'basics', 'fundamentals'
+];
+
+// Keywords that indicate an app configuration question
+const APP_CONFIGURATION_KEYWORDS = [
+  'how to', 'how do i', 'can i', 'is it possible', 'setup', 'configure',
+  'settings', 'options', 'preferences', 'feature', 'functionality',
+  'this app', 'the app', 'promptdojo', 'application', 'tool', 'interface',
+  'using', 'usage', 'work with', 'connect', 'integration'
 ];
 
 export function validateQueryIntent(intent: QueryIntent): {
   isAllowed: boolean;
   reason?: string;
+  isGeneralKnowledge?: boolean;
+  isAppConfiguration?: boolean;
 } {
   console.log('[AllowList] Validating query intent:', intent);
   
   // Check if the intent category is valid
-  if (!['reporting', 'data_retrieval', 'analysis', 'connection_check'].includes(intent.category)) {
+  if (!['reporting', 'data_retrieval', 'analysis', 'connection_check', 'general_knowledge', 'app_configuration', 'undefined'].includes(intent.category)) {
     console.log(`[AllowList] Invalid intent category: ${intent.category}`);
     return {
       isAllowed: false,
@@ -59,6 +88,24 @@ export function validateQueryIntent(intent: QueryIntent): {
   if (intent.category === 'connection_check') {
     console.log('[AllowList] Connection check query detected, allowing');
     return { isAllowed: true };
+  }
+  
+  // Special case for general knowledge queries
+  if (intent.category === 'general_knowledge') {
+    console.log('[AllowList] General knowledge query detected, allowing');
+    return { 
+      isAllowed: true,
+      isGeneralKnowledge: true
+    };
+  }
+  
+  // Special case for app configuration queries
+  if (intent.category === 'app_configuration') {
+    console.log('[AllowList] App configuration query detected, allowing');
+    return { 
+      isAllowed: true,
+      isAppConfiguration: true
+    };
   }
 
   // Check if all actions are allowed
@@ -95,6 +142,9 @@ export function validateQueryIntent(intent: QueryIntent): {
 
   // Check if there's at least one rule that allows this combination of actions and objects
   let isAllowed = false;
+  let isGeneralKnowledge = false;
+  let isAppConfiguration = false;
+  
   for (const rule of ALLOW_LIST_RULES) {
     const hasAllowedActions = intent.actions.every((action) => rule.allowedActions.includes(action));
     const hasAllowedObjects = intent.jiraObjects.every((obj) => rule.jiraObjects.includes(obj));
@@ -108,6 +158,8 @@ export function validateQueryIntent(intent: QueryIntent): {
     
     if (hasAllowedActions && hasAllowedObjects) {
       isAllowed = true;
+      isGeneralKnowledge = rule.intent === 'general_knowledge';
+      isAppConfiguration = rule.intent === 'app_configuration';
       console.log(`[AllowList] Query allowed by rule: ${rule.intent}`);
       break;
     }
@@ -122,5 +174,9 @@ export function validateQueryIntent(intent: QueryIntent): {
   }
 
   console.log('[AllowList] Query intent is allowed');
-  return { isAllowed: true };
+  return { 
+    isAllowed: true,
+    isGeneralKnowledge,
+    isAppConfiguration
+  };
 } 
