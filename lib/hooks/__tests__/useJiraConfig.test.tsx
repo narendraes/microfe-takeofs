@@ -30,9 +30,9 @@ describe('useJiraConfig', () => {
 
     const { result } = renderHook(() => useJiraConfig());
 
-    // Wait for the effect to complete
+    // Wait for all state updates to complete
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await mockResponse.json();
     });
 
     expect(result.current).toEqual({
@@ -50,9 +50,10 @@ describe('useJiraConfig', () => {
 
     const { result } = renderHook(() => useJiraConfig());
 
-    // Wait for the effect to complete
+    // Wait for all state updates to complete
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      const response = await mockResponse.json();
+      await Promise.resolve(); // Wait for state update to complete
     });
 
     expect(result.current).toEqual({
@@ -70,18 +71,21 @@ describe('useJiraConfig', () => {
 
     const { result } = renderHook(() => useJiraConfig());
 
-    // Wait for the initial effect to complete
+    // Wait for initial state updates to complete
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      const response = await mockFailedResponse.json();
+      await Promise.resolve(); // Wait for state update to complete
     });
 
     // Second attempt succeeds
     const mockSuccessResponse = { ok: true, json: () => Promise.resolve({ valid: true, host: 'https://jira.example.com' }) };
     (global.fetch as jest.Mock).mockResolvedValueOnce(mockSuccessResponse);
 
-    // Retry the connection
+    // Retry the connection and wait for state updates
     await act(async () => {
       await result.current.retryConnection();
+      await mockSuccessResponse.json();
+      await Promise.resolve(); // Wait for state update to complete
     });
 
     expect(result.current).toEqual({

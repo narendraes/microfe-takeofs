@@ -21,7 +21,12 @@ export function useJiraConfig() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to validate Jira connection');
+        setConfig({
+          isConfigured: false,
+          isConnected: false,
+          error: data.error || 'Failed to validate Jira connection',
+        });
+        return;
       }
 
       setConfig({
@@ -31,11 +36,11 @@ export function useJiraConfig() {
         host: data.host,
       });
     } catch (error) {
-      setConfig(prev => ({
-        ...prev,
+      setConfig({
+        isConfigured: false,
         isConnected: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
-      }));
+      });
     }
   };
 
