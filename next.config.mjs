@@ -18,9 +18,16 @@ const nextConfig = {
     unoptimized: true,
   },
   experimental: {
-    webpackBuildWorker: true,
-    parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
+    scrollRestoration: true,
+  },
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.watchOptions = {
+        ignored: ['**/node_modules', '**/.git'],
+        aggregateTimeout: 300,
+      }
+    }
+    return config
   },
   async headers() {
     return [

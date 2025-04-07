@@ -35,53 +35,38 @@ PromptDojo will be a new tab in the application, positioned next to the Home tab
    - Option to clear conversation history
 
 2. **AI Language Model Integration**
-   - Connect to LLM hosted on Ollama (local) or cloud platforms (Azure, Databricks)
-   - Implement an allow-list system to restrict queries to Jira-related operations only
-   - Parse natural language to structured Jira API queries
-   - Format Jira API responses into human-readable insights
-   - Handle context and follow-up questions
+   - Support multiple LLM providers:
+     - Local: Ollama (llama3.2)
+     - Cloud: Google Gemini AI
+   - Configuration for model selection and fallback strategy
+   - Secure API key management:
+     - Store API keys in local `.env.local` file
+     - Add `.env.local` to `.gitignore`
+   - Model-specific optimizations:
+     - Ollama: Local deployment optimization
+     - Gemini: Token usage optimization and cost management
    
-   #### Allow-List Implementation
-   - Validate that incoming queries relate only to permitted Jira operations
-   - Query validation flow:
-     1. User submits query to PromptDojo
-     2. Query is analyzed by LLM
-     3. Intent is classified (e.g., "reporting", "data retrieval", "analysis")
-     4. Allow-list checks if intent + Jira object type is permitted
-     5. If allowed → process query
-     6. If not allowed → return friendly explanation of limitations
-   - Define rules for allowed intents, actions, and Jira objects
-   - Enforce read-only operations until proper authentication is configured
-   - Implement categorization rules for organizing and presenting query results
+   #### Model Configuration
+   - Environment variables:
+     ```env
+     GEMINI_API_KEY=your_api_key_here
+     DEFAULT_MODEL=gemini # or ollama
+     OLLAMA_HOST=http://localhost:11434
+     ```
+   - Model selection strategy:
+     1. Use configured default model
+     2. Fallback to alternative if primary fails
+     3. Error handling for both providers
    
-   #### Example Usage Scenarios
-   
-   **Basic Reporting Examples:**
-   - "Show me all open bugs in the current sprint"
-   - "What's the average resolution time for critical issues in the last month?"
-   - "Who has the most assigned tasks in the Authentication project?"
-   - "Generate a velocity chart for Team Alpha over the last 5 sprints"
-   - "Which epics have the most story points remaining?"
-
-   **Analysis Examples:**
-   - "Analyze our sprint completion rate trend over the past quarter"
-   - "Compare story point estimation accuracy between Team A and Team B"
-   - "Show burndown charts for active sprints across all teams"
-   - "Identify tickets that have been blocked for more than 3 days"
-   - "What percentage of issues required multiple fix attempts in the last release?"
-
-   **Complex Example - Release Notes Generation:**
-   - Query: "Create release notes for fix version 2.3.4"
-   - System would:
-     1. Recognize this as a "reporting" intent on "fix version" object (allowed)
-     2. Query Jira API for all issues with fixVersion = "2.3.4"
-     3. Filter out test cases from results
-     4. For each issue:
-        - Check if release notes field is populated
-        - Categorize by issue type (feature, bug, improvement)
-     5. Format response as structured release notes
-   - Output would include categorized sections for New Features, Bug Fixes, and Improvements
-   - Implementation would use read-only operations with clear categorization rules
+   #### API Integration Requirements
+   - Gemini AI:
+     - Support for chat completion API
+     - Context handling for conversation history
+     - Error handling for rate limits and token limits
+     - Response streaming support
+   - Ollama:
+     - Maintain existing functionality
+     - Add compatibility layer for unified response format
 
 3. **Jira Integration**
    - Connect to user's Jira instance via API
@@ -115,14 +100,22 @@ PromptDojo will be a new tab in the application, positioned next to the Home tab
 - **Security**: Ensure all API tokens and credentials are properly secured
 - **Performance**: Optimize for responsive UI even during API calls
 - **Compatibility**: Support for different Jira versions and cloud/server instances
+- **API Key Security**: 
+  - Store API keys in `.env.local`
+  - Never commit API keys to repository
+  - Provide clear documentation for key setup
 
 ## Implementation Phases
 
 ### Phase 1 - MVP
 - Basic chat interface
-- Connection to Jira API
+- Dual LLM integration:
+  - Google Gemini AI setup
+  - Ollama integration
+- Model switching capability
+- Local API key management
 - Simple query handling
-- LLM integration with basic allow-list
+- Basic allow-list implementation
 - GitHub secrets integration
 
 ### Phase 2 - Enhanced Features

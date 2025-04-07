@@ -2,25 +2,27 @@
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useState, FormEvent, KeyboardEvent } from 'react';
+import { SendHorizontal } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
-  isLoading: boolean;
+  onSend: (message: string) => void;
+  isLoading?: boolean;
 }
 
-export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
-  const [input, setInput] = useState('');
+export function ChatInput({ onSend, isLoading }: ChatInputProps) {
+  const [message, setMessage] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim() && !isLoading) {
-      onSendMessage(input.trim());
-      setInput('');
+    if (message.trim() && !isLoading) {
+      onSend(message);
+      setMessage('');
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
@@ -28,21 +30,22 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-2">
+    <form onSubmit={handleSubmit} className="flex gap-2">
       <Textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        ref={textareaRef}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Ask about Jira data..."
-        className="min-h-[60px] resize-none"
+        placeholder="Ask about your Jira data..."
+        className="min-h-[60px] max-h-[200px]"
         disabled={isLoading}
       />
       <Button 
         type="submit" 
-        disabled={!input.trim() || isLoading}
-        className="mb-1"
+        size="icon"
+        disabled={!message.trim() || isLoading}
       >
-        {isLoading ? 'Processing...' : 'Send'}
+        <SendHorizontal className="h-4 w-4" />
       </Button>
     </form>
   );
