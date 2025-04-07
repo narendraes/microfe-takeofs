@@ -1,96 +1,179 @@
-# PromptDojo - Jira Integration
+# PromptDojo - AI-Powered Jira Assistant
 
-PromptDojo is a modern AI chat interface for interacting with Jira and obtaining customized reporting output. This feature aims to streamline access to Jira data through natural language processing.
+PromptDojo is an intelligent chat interface that simplifies interaction with Jira through natural language processing. It combines the power of multiple AI models (Google Gemini and Ollama) with Jira's API to provide intuitive access to your project data.
 
 ## Features
 
-### Phase 1 MVP (Current)
-- Basic chat interface
-- Connection to Jira API (read-only)
-- Simple query handling
-- LLM integration with basic allow-list
-- GitHub secrets integration
-
-## Tech Stack
-
-- Next.js 14 with App Router
-- TypeScript
-- Tailwind CSS
-- Shadcn UI
-- Ollama for LLM integration
-
-## Prerequisites
-
-- Node.js 18+
-- npm or yarn
-- Ollama running locally at http://localhost:11434/ with llama3.2 model
+- 🤖 Dual AI Model Support
+  - Google Gemini AI (Cloud-based)
+  - Ollama (Local deployment)
+- 📊 Jira Integration
+  - Issue search and retrieval
+  - Project information
+  - Sprint management
+  - Real-time data access
+- 💬 Natural Language Interface
+  - Intuitive query processing
+  - Context-aware responses
+  - Rich formatting support
+- 🔒 Secure Configuration
+  - Environment-based setup
+  - API key management
+  - Rate limiting protection
 
 ## Getting Started
 
-1. Clone the repository
+### Prerequisites
+
+- Node.js 18.x or higher
+- npm or yarn
+- Jira account with API access
+- (Optional) Ollama installed locally
+- Google Gemini API key
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   cd [repository-name]
+   ```
+
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Run the development server:
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+4. Configure your `.env.local` with your credentials:
+   ```env
+   # AI Model Configuration
+   GEMINI_API_KEY=your-gemini-api-key
+   DEFAULT_MODEL=gemini
+   OLLAMA_HOST=http://localhost:11434
+
+   # Jira Configuration
+   JIRA_HOST="https://your-domain.atlassian.net"
+   JIRA_EMAIL="your-email@example.com"
+   JIRA_API_TOKEN="your-jira-api-token"
+   ```
+
+5. Start the development server:
    ```bash
    npm run dev
    ```
-4. Open [http://localhost:3000/promptdojo](http://localhost:3000/promptdojo) in your browser
 
-## Project Structure
+The application will be available at `http://localhost:3000/promptdojo`
 
-```
-promptdojo/
-├── app/                  # Next.js App Router
-│   ├── promptdojo/       # PromptDojo page
-│   └── layout.tsx        # Root layout
-├── components/           # React components
-│   ├── chat/             # Chat-related components
-│   └── ui/               # UI components (Shadcn)
-├── lib/                  # Utility functions and services
-│   ├── api/              # API clients
-│   ├── ollama/           # Ollama integration
-│   └── types.ts          # TypeScript types
-└── public/               # Static assets
-```
+## Usage
+
+### Basic Queries
+
+PromptDojo understands natural language queries about your Jira data. Here are some examples:
+
+- "Show me all open issues in project X"
+- "What's the status of the current sprint?"
+- "List all issues assigned to me"
+- "Generate a summary of last sprint's velocity"
+
+### Advanced Features
+
+1. **Project Analysis**
+   - Team performance metrics
+   - Sprint velocity tracking
+   - Backlog health analysis
+
+2. **Sprint Management**
+   - Current sprint overview
+   - Sprint planning assistance
+   - Velocity predictions
+
+3. **Issue Management**
+   - Search and filtering
+   - Status updates
+   - Assignment tracking
 
 ## Configuration
 
-### Jira API
+### AI Model Selection
 
-To connect to Jira, you'll need to set up the following environment variables:
+The application supports two AI models:
 
-```
-JIRA_API_URL=your-jira-instance-url
-JIRA_API_TOKEN=your-jira-api-token
-```
+1. **Google Gemini AI**
+   - Cloud-based solution
+   - Requires API key
+   - Better for complex queries
 
-### Ollama
+2. **Ollama (Local)**
+   - Self-hosted solution
+   - No API key required
+   - Good for basic queries
+   - Requires local installation
 
-The application is configured to connect to Ollama running locally at http://localhost:11434/ using the llama3.2 model. You can modify these settings in `lib/ollama/client.ts`.
-
-## Known Issues and Workarounds
-
-### UUID Dependency
-
-The project initially used the `uuid` package for generating unique IDs. However, there were issues with the package not being properly resolved by Next.js. As a workaround, we've implemented a simple ID generation function using `Math.random()`:
-
-```typescript
-const generateId = () => {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-};
+Set your preferred model in `.env.local`:
+```env
+DEFAULT_MODEL=gemini  # or 'ollama'
 ```
 
-This function is used in `components/chat/chat-container.tsx` to generate unique IDs for chat messages.
+### Jira Setup
 
-## Development Roadmap
+1. Generate a Jira API token:
+   - Go to [Atlassian Account Settings](https://id.atlassian.com/manage/api-tokens)
+   - Create a new API token
+   - Copy the token to your `.env.local`
 
-See the [PRD](docs/prd/promptdojo-jira-integration.md) for the complete development roadmap and feature list.
+2. Configure Jira connection:
+   ```env
+   JIRA_HOST="https://your-domain.atlassian.net"
+   JIRA_EMAIL="your-email@example.com"
+   JIRA_API_TOKEN="your-jira-api-token"
+   ```
+
+## Security Considerations
+
+- Never commit `.env.local` to version control
+- Keep API keys secure and rotate them regularly
+- Use environment variables for sensitive data
+- Implement rate limiting for API calls
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify Jira credentials
+   - Check API token validity
+   - Ensure correct Jira host URL
+
+2. **AI Model Errors**
+   - Validate API keys
+   - Check model availability
+   - Verify network connectivity
+
+3. **Rate Limiting**
+   - Implement exponential backoff
+   - Cache frequent queries
+   - Optimize request patterns
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
-MIT
+[Your License Here]
+
+## Support
+
+For support, please [create an issue](your-issue-tracker-url) or contact the development team.
 
 # Product Feedback Portal
 
